@@ -1,0 +1,13 @@
+train: C:\Users\user\Desktop\FINAL\final-project\16\data\4\train\images
+val: C:\Users\user\Desktop\FINAL\final-project\16\data\4\valid\images
+test: C:\Users\user\Desktop\FINAL\final-project\16\data\4\test\images
+
+nc: 10
+names: ['apple', 'cabbage', 'garlic', 'ginger', 'mango', 'onion', 'orange', 'pineapple', 'potato', 'tomato']
+
+roboflow:
+  workspace: practicetrain
+  project: ingredients-u0umv
+  version: 3
+  license: MIT
+  url: https://universe.roboflow.com/practicetrain/ingredients-u0umv/dataset/3
