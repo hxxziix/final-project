@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\1\train\images
+val: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\1\valid\images
+test: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\1\test\images
 
 nc: 5
 names: ['Carrot', 'Cheese', 'Egg', 'Potato', 'Zucchini']

@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\2\train\images
+val: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\2\valid\images
+test: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\2\test\images
 
 nc: 14
 names: ['bread', 'cabbage', 'carrot', 'cheese', 'chicken', 'cucumber', 'egg', 'meat', 'milk', 'onion', 'potato', 'rice', 'spam', 'tomato']

@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\4\train\images
+val: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\4\valid\images
+test: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\4\test\images
 
 nc: 10
 names: ['apple', 'cabbage', 'garlic', 'ginger', 'mango', 'onion', 'orange', 'pineapple', 'potato', 'tomato']

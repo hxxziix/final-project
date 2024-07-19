@@ -1,6 +1,6 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+train: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\3\train\images
+val: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\3\valid\images
+test: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\3\test\images
 
 nc: 61
 names: ['Apple', 'Banana', 'Beetroot', 'Bell pepper', 'Black pepper', 'Bread', 'Broccoli', 'Bun', 'Butter', 'Cabbage', 'Cardamom', 'Carrot', 'Catfish', 'Cauliflower', 'Cheese', 'Chicken', 'Chilli Pepper', 'Cinnamon', 'Coriander', 'Corn', 'Crawfish', 'Cucumber', 'Egg', 'Eggplant', 'Garlic', 'Ginger', 'Grapes', 'Jalepeno', 'Kiwi', 'Lettuce', 'Lobster', 'Mackerel', 'Mango', 'Milk', 'Olive', 'Onion', 'Orange', 'Paprika', 'Pear', 'Peas', 'Pineapple', 'Pistachio', 'Pomegranate', 'Pork', 'Potato', 'Radish', 'Rosemary', 'Soya Beans', 'Spring onion', 'Strawberry', 'Thyme', 'Tomato', 'Walnut', 'Watermelon', 'clove', 'duck', 'lemon', 'paer', 'raddish', 'spinach', 'sweet potato']
