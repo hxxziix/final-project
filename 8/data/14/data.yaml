@@ -1,0 +1,13 @@
+train: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\14\test\images
+val: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\14\test\images
+test: C:\Users\hxxzi\Desktop\GitHub\final-project\8\data\14\test\images
+
+nc: 30
+names: ['apple', 'banana', 'beef', 'blueberries', 'bread', 'butter', 'carrot', 'cheese', 'chicken', 'chicken_breast', 'chocolate', 'corn', 'eggs', 'flour', 'goat_cheese', 'green_beans', 'ground_beef', 'ham', 'heavy_cream', 'lime', 'milk', 'mushrooms', 'onion', 'potato', 'shrimp', 'spinach', 'strawberries', 'sugar', 'sweet_potato', 'tomato']
+
+roboflow:
+  workspace: karel-cornelis-q2qqg
+  project: aicook-lcv4d
+  version: 4
+  license: MIT
+  url: https://universe.roboflow.com/karel-cornelis-q2qqg/aicook-lcv4d/dataset/4
