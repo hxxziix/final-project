@@ -158,7 +158,7 @@ st.set_page_config(
     # 페이지 제목
     page_title='MultiCampus Enjo2조',
     # 페이지 아이콘
-    page_icon='images/1.png'
+    page_icon='page/images/1.png'
 )
 
 # 공백
