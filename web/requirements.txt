@@ -3,4 +3,5 @@ opencv-python
 ultralytics
 numpy
 scipy
-pillow
+Pillow
+torch
