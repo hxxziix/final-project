@@ -83,7 +83,7 @@ class VideoTransformer(VideoTransformerBase):
 
 def show_camera():
     # 웹캠 스트리밍 및 변환기 설정
-    webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+    webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
 
 # 애는 사진 캡쳐방식
 # def show_camera():
