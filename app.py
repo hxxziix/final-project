@@ -1,5 +1,5 @@
 from AvengersEnsemble import *
-from Draw import draw
+from Draw import *
 import streamlit as st
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 # from PIL import Image
