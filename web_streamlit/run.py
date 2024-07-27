@@ -202,25 +202,19 @@ def start_camera():
 container = st.container()
 container.button("Camera Start", on_click=start_camera, use_container_width=True)
 
+# 카메라를 클라이언트 측에서 시작하는 함수
 def show_camera():
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        st.error("Error: Could not open web_streamlitcam.")
-        return
+    # 웹캠 입력을 받기 위한 Streamlit의 camera_input 사용
+    image = st.camera_input("Capture an image")
 
-    detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
+    if image is not None:
+        # 이미지 처리 및 앙상블 예측 수행
+        frame = Image.open(image)
 
-    placeholder = st.empty()
-
-    while st.session_state.button_clicked:
-        # 프레임 읽기
-        ret, frame = cap.read()
-        if not ret:
-            st.error("Error: Could not read frame.")
-            break
-
-        # 앙상블 예측 수행
+        # 앙상블 예측 수행 (ensemble_predict 함수는 사전에 정의되어 있어야 함)
         boxes, confidences, labels = ensemble_predict(frame)
+
+        detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
 
         # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
         if len(boxes) > 0 and len(confidences) > 0 and len(labels) > 0:
@@ -230,20 +224,72 @@ def show_camera():
 
                 # 바운딩 박스와 레이블 그리기
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
 
                 detected_labels.add(label_name)
 
-        # 프레임을 BGR에서 RGB로 변환
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_image = Image.fromarray(frame)
-
-        # 이미지 업데이트
-        placeholder.image(frame_image, use_column_width=True)
-
-    # 자원 해제
-    cap.release()
+        # 최종 결과 이미지 업데이트
+        st.image(frame, caption='Processed Image', use_column_width=True)
 
 # 버튼이 클릭되었을 때 카메라 화면 표시 함수 호출
 if st.session_state.button_clicked:
     show_camera()
+
+# # 버튼 클릭 여부를 확인하기 위한 상태 변수
+# if 'button_clicked' not in st.session_state:
+#     st.session_state.button_clicked = False
+
+# # 버튼 클릭 이벤트 처리
+# def start_camera():
+#     st.session_state.button_clicked = True
+
+# # 버튼 크기 넓히기 위해 container 생성
+# container = st.container()
+# container.button("Camera Start", on_click=start_camera, use_container_width=True)
+
+# def show_camera():
+#     cap = cv2.VideoCapture(0)
+#     if not cap.isOpened():
+#         st.error("Error: Could not open web_streamlitcam.")
+#         return
+
+#     detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
+
+#     placeholder = st.empty()
+
+#     while st.session_state.button_clicked:
+#         # 프레임 읽기
+#         ret, frame = cap.read()
+#         if not ret:
+#             st.error("Error: Could not read frame.")
+#             break
+
+#         # 앙상블 예측 수행
+#         boxes, confidences, labels = ensemble_predict(frame)
+
+#         # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
+#         if len(boxes) > 0 and len(confidences) > 0 and len(labels) > 0:
+#             for box, conf, label in zip(boxes, confidences, labels):
+#                 x1, y1, x2, y2 = map(int, box)
+#                 label_name = label  # 이미 label은 클래스 이름입니다.
+
+#                 # 바운딩 박스와 레이블 그리기
+#                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+#                 cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+
+#                 detected_labels.add(label_name)
+
+#         # 프레임을 BGR에서 RGB로 변환
+#         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#         frame_image = Image.fromarray(frame)
+
+#         # 이미지 업데이트
+#         placeholder.image(frame_image, use_column_width=True)
+
+#     # 자원 해제
+#     cap.release()
+
+# # 버튼이 클릭되었을 때 카메라 화면 표시 함수 호출
+# if st.session_state.button_clicked:
+#     show_camera()
