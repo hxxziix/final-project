@@ -158,7 +158,7 @@ st.set_page_config(
     # 페이지 제목
     page_title='MultiCampus Enjo2조',
     # 페이지 아이콘
-    page_icon='web/images/1.png'
+    page_icon='web_streamlit/images/1.png'
 )
 
 # 공백
@@ -170,7 +170,7 @@ col1, col2 = st.columns([2, 5])
 
 # col1 위치에 이미지
 with col1:
-    st.image('web/images/1.png', width=150)
+    st.image('web_streamlit/images/1.png', width=150)
 
 # col2 위치에 프젝 이름
 with col2:
@@ -205,7 +205,7 @@ container.button("Camera Start", on_click=start_camera, use_container_width=True
 def show_camera():
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-        st.error("Error: Could not open webcam.")
+        st.error("Error: Could not open web_streamlitcam.")
         return
 
     detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
