@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../technique')))
-
 from AvengersEnsemble import *
 import streamlit as st
 import cv2
@@ -13,7 +8,7 @@ st.set_page_config(
     # 페이지 제목
     page_title='MultiCampus Enjo2조',
     # 페이지 아이콘
-    page_icon='app/images/1.png'
+    page_icon='app_gui/1.png'
 )
 
 # 공백
@@ -25,7 +20,7 @@ col1, col2 = st.columns([2, 5])
 
 # col1 위치에 이미지
 with col1:
-    st.image('app/images/1.png', width=150)
+    st.image('app_gui/1.png', width=150)
 
 # col2 위치에 프젝 이름
 with col2:
