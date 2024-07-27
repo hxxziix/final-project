@@ -15,11 +15,16 @@ def ensemble_predict(image):
         results.append(result)
         # 각 모델에서 감지한 바운딩 박스의 수
         detection_counts.append(len(result[0].boxes))
-    print('\nNumber of objects detected by each model:')
+    print('\n각 모델별 감지한 객체 수:')
     print(detection_counts)
+
+    if sum(detection_counts) == 0:
+        print("모든 모델이 객체를 감지하지 못함.")
+        return [], [], []
 
     # 과반수 이상의 모델이 바운딩 박스가 없는 경우
     if sum(count == 0 for count in detection_counts) >= len(models) / 2: # count가 0인 모델의 수가 과반수 이상인지 검사
+        print("\n과반수 이상의 모델이 객체를 감지하지 못하여 화면에 표시하지 않음.")
         return [], [], []
 
     combined_results = combine_results(*results)  # final_boxes, final_confidences, final_labels
@@ -128,11 +133,11 @@ def group_boxes_by_overlap(boxes, iou_threshold=0.4):
                 group.append(j)  # 박스 번호 j를 group에 추가
                 visited.add(j)  # 집합에도 추가
         groups.append(group)  # 그룹을 groups에 추가
-    print('\nbox number groups:')
+    print('\n겹치는 박스끼리 박스 번호로 그룹화:')
     print(groups)
-    print('\nlabels of passed groups:')
 
     groups = [group for group in groups if len(group) >= 3] # 그룹내 박스가 3개 이상인 것만 통과
+    print('\n박스가 3개 이상인 그룹의 라벨:')
     return groups
 
 # IoU (Intersection over Union) 계산 함수

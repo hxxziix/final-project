@@ -1,7 +1,8 @@
 from AvengersEnsemble import *
+from Draw import draw
 import streamlit as st
-import cv2
-from PIL import Image
+from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+# from PIL import Image
 
 # 페이지 기본 설정
 st.set_page_config(
@@ -52,71 +53,68 @@ def start_camera():
 container = st.container()
 container.button("Camera Start", on_click=start_camera, use_container_width=True)
 
-# 카메라를 클라이언트 측에서 시작하는 함수
-def show_camera():
-    detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
+# 이 클래스에서 생성된 객체는 Streamlit WebRTC의 비디오 스트리밍에서 실시간으로 비디오 프레임을 처리하고,
+# 탐지된 라벨과 관련 정보를 유지하며, 이 모든 작업을 반복적으로 수행할 수 있도록 설계된 클래스의 인스턴스이다.
+# 여기선 하나의 객체가 특정 작업을 반복적으로 한다.
+class VideoTransformer(VideoTransformerBase):
+    def __init__(self):
+        self.detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
+    
+    def transform(self, frame):
+        # 프레임을 RGB로 변환
+        img = frame.to_ndarray(format="bgr24")
 
-    image = st.camera_input("Capture an image")
-    if image is not None:
-        # 이미지 처리 및 앙상블 예측 수행
-        frame = Image.open(image)
-
-        # 앙상블 예측 수행
-        boxes, confidences, labels = ensemble_predict(frame)
+        # 예측 수행
+        boxes, confidences, labels = ensemble_predict(img)
 
         # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
-        print("\nfinal conclusion:")
-        if len(boxes) > 0 and len(confidences) > 0 and len(labels) > 0:
-            for box, conf, label in zip(boxes, confidences, labels):
-                x1, y1, x2, y2 = map(int, box)
-                label_name = label
+        draw(img, boxes, confidences, labels)
 
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                print(f'Box: {box}, Confidence: {conf}, Label: {label_name}')
+        for label in labels:
+            self.detected_labels.add(label)
+        
+        st.write("탐지된 라벨 기록:", self.detected_labels)
 
-                detected_labels.add(label_name)
-                print("\nDetected Labels:", detected_labels) # 지금까지 탐지된 라벨 출력
+        print("\n탐지된 라벨 기록:")
+        print(self.detected_labels)
         print('\n' + '==' * 50)
+        
+        return img
 
-        # 최종 결과 이미지 업데이트
-        st.image(frame, caption='Processed Image', use_column_width=True)
+def show_camera():
+    # 웹캠 스트리밍 및 변환기 설정
+    webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
 
+# 애는 사진 캡쳐방식
 # def show_camera():
-#     detected_labels = set()  # 중복 없이 탐지된 라벨을 저장할 집합(set)
+#     detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
 
-#     while True:
-#         # 웹캠 입력을 받기 위한 Streamlit의 camera_input 사용
-#         image = st.camera_input("Capture an image")
+#     image = st.camera_input("Capture an image")
+#     if image is not None:
+#         frame = Image.open(image)
 
-#         if image is not None:
-#             # 이미지 처리 및 앙상블 예측 수행
-#             frame = Image.open(image)
+#         # 예측 수행
+#         boxes, confidences, labels = ensemble_predict(frame)
 
-#             # 앙상블 예측 수행
-#             boxes, confidences, labels = ensemble_predict(frame)
+#         # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
+#         print("\n최종 결정:")
+#         if len(boxes) > 0 and len(confidences) > 0 and len(labels) > 0:
+#             for box, conf, label in zip(boxes, confidences, labels):
+#                 x1, y1, x2, y2 = map(int, box)
+#                 label_name = label
 
-#             # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
-#             print("\nfinal conclusion:")
-#             if len(boxes) > 0 and len(confidences) > 0 and len(labels) > 0:
-#                 for box, conf, label in zip(boxes, confidences, labels):
-#                     x1, y1, x2, y2 = map(int, box)
-#                     label_name = label
+#                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+#                 cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+#                 print(f'박스 좌표: {box}, 신뢰도: {conf}, 라벨: {label_name}')
 
-#                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-#                     cv2.putText(frame, f'{label_name} {conf:.2f}', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-#                     print(f'Box: {box}, Confidence: {conf}, Label: {label_name}')
+#                 detected_labels.add(label_name)
 
-#                     detected_labels.add(label_name)
-#                     print("\nDetected Labels:", detected_labels) # 지금까지 탐지된 라벨 출력
-#             print('\n' + '==' * 50)
+#         print("\n탐지된 라벨 기록:")
+#         print(detected_labels)
+#         print('\n' + '==' * 50)
 
-#             # 최종 결과 이미지 업데이트
-#             st.image(frame, caption='Processed Image', use_column_width=True)
-
-#             # 버튼 클릭 여부 확인하여 루프 종료
-#             if st.session_state.button_clicked:
-#                 break
+#         # 최종 결과 이미지 업데이트
+#         st.image(frame, caption='Processed Image', use_column_width=True)
 
 # 버튼이 클릭되었을 때 카메라 화면 표시 함수 호출
 if st.session_state.button_clicked:
