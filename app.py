@@ -59,9 +59,6 @@ container.button("Camera Start", on_click=start_camera, use_container_width=True
 # 이 클래스에서 생성된 객체는 Streamlit WebRTC의 비디오 스트리밍에서 실시간으로 비디오 프레임을 처리하고,
 # 탐지된 라벨과 관련 정보를 유지하며, 이 모든 작업을 반복적으로 수행할 수 있도록 설계된 클래스의 인스턴스이다.
 # 여기선 하나의 객체가 특정 작업을 반복적으로 한다.
-
-detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
-
 # class VideoTransformer(VideoTransformerBase):
 #     def __init__(self):
 #         self.detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
@@ -86,6 +83,8 @@ detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
 #         print('\n' + '==' * 50)
         
 #         return img
+
+detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
 
 def transform(frame: av.VideoFrame):
     global detected_labels
@@ -112,9 +111,10 @@ def transform(frame: av.VideoFrame):
 def show_camera():
     global detected_labels
     detected_labels = set()
+    ice_servers = [{"urls": "stun:stun.l.google.com:19302"}]
     # 웹캠 스트리밍 및 변환기 설정
+    webrtc_streamer(key="streamer", video_frame_callback=transform, ice_servers=ice_servers, sendback_audio=False)
     # webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
-    webrtc_streamer(key="streamer", video_frame_callback=transform, sendback_audio=False)
 
 # 애는 사진 캡쳐방식
 # def show_camera():
