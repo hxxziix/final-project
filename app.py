@@ -1,7 +1,10 @@
 from AvengersEnsemble import *
 from Draw import *
 import streamlit as st
-from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
+from streamlit_webrtc import webrtc_streamer
+import av
+# from streamlit_webrtc import webrtc_streamer, VideoHTMLAttributes
+# from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 # from PIL import Image
 
 # 페이지 기본 설정
@@ -56,34 +59,62 @@ container.button("Camera Start", on_click=start_camera, use_container_width=True
 # 이 클래스에서 생성된 객체는 Streamlit WebRTC의 비디오 스트리밍에서 실시간으로 비디오 프레임을 처리하고,
 # 탐지된 라벨과 관련 정보를 유지하며, 이 모든 작업을 반복적으로 수행할 수 있도록 설계된 클래스의 인스턴스이다.
 # 여기선 하나의 객체가 특정 작업을 반복적으로 한다.
-class VideoTransformer(VideoTransformerBase):
-    def __init__(self):
-        self.detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
+
+detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
+
+# class VideoTransformer(VideoTransformerBase):
+#     def __init__(self):
+#         self.detected_labels = set() # 탐지된 라벨을 저장할 집합(set)
     
-    def transform(self, frame):
-        # 프레임을 RGB로 변환
-        img = frame.to_ndarray(format="bgr24")
+#     def transform(self, frame):
+#         # 프레임을 RGB로 변환
+#         img = frame.to_ndarray(format="bgr24")
 
-        # 예측 수행
-        boxes, confidences, labels = ensemble_predict(img)
+#         # 예측 수행
+#         boxes, confidences, labels = ensemble_predict(img)
 
-        # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
-        draw(img, boxes, confidences, labels)
+#         # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
+#         draw(img, boxes, confidences, labels)
 
-        for label in labels:
-            self.detected_labels.add(label)
+#         for label in labels:
+#             self.detected_labels.add(label)
         
-        st.write("탐지된 라벨 기록:", self.detected_labels)
+#         st.write("탐지된 라벨 기록:", self.detected_labels)
 
-        print("\n탐지된 라벨 기록:")
-        print(self.detected_labels)
-        print('\n' + '==' * 50)
+#         print("\n탐지된 라벨 기록:")
+#         print(self.detected_labels)
+#         print('\n' + '==' * 50)
         
-        return img
+#         return img
+
+def transform(frame: av.VideoFrame):
+    global detected_labels
+    # 프레임을 RGB로 변환
+    img = frame.to_ndarray(format="bgr24")
+
+    # 예측 수행
+    boxes, confidences, labels = ensemble_predict(img)
+
+    # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
+    draw(img, boxes, confidences, labels)
+
+    for label in labels:
+        detected_labels.add(label)
+    
+    st.write("탐지된 라벨 기록:", detected_labels)
+
+    print("\n탐지된 라벨 기록:")
+    print(detected_labels)
+    print('\n' + '==' * 50)
+    
+    return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 def show_camera():
+    global detected_labels
+    detected_labels = set()
     # 웹캠 스트리밍 및 변환기 설정
-    webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
+    # webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
+    webrtc_streamer(key="streamer", video_frame_callback=transform, sendback_audio=False)
 
 # 애는 사진 캡쳐방식
 # def show_camera():
