@@ -10,3 +10,4 @@ opencv-python==4.8.1.78
 aioice
 aiortc
 av==12.3.0
+google-crc32c==1.5.0
