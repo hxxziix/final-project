@@ -111,9 +111,8 @@ def transform(frame: av.VideoFrame):
 def show_camera():
     global detected_labels
     detected_labels = set()
-    ice_servers = [{"urls": "stun:stun.l.google.com:19302"}]
     # 웹캠 스트리밍 및 변환기 설정
-    webrtc_streamer(key="streamer", video_frame_callback=transform, ice_servers=ice_servers, sendback_audio=False)
+    webrtc_streamer(key="streamer", video_frame_callback=transform, sendback_audio=False)
     # webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
 
 # 애는 사진 캡쳐방식
