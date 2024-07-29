@@ -54,10 +54,19 @@ def transform(frame: av.VideoFrame):
     return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 # WebRTC 연결 설정: STUN/TURN 서버 설정
-rtc_configuration = {
-    "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}] # STUN 서버
-    # TURN 서버: 선택사항
+rtc_configuration = {"iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]}, # STUN 서버
+        
+        {"urls": ["turn:your_turn_server_ip:3478"], # TURN 서버
+         "username": "your_username",               # 사용자 이름
+         "credential": "your_password"}             # 비밀번호
+    ]
 }
+
+# rtc_configuration = {
+#     "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}] # STUN 서버
+#     # TURN 서버: 선택사항
+# }
 
 # 스트리밍 ui
 webrtc_streamer(key="streamer", video_frame_callback=transform, rtc_configuration=rtc_configuration, sendback_audio=False)
