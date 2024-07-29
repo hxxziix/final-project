@@ -72,7 +72,8 @@ def show_camera():
 
     detected_labels = set()  # 탐지된 라벨을 저장할 집합(set)
 
-    placeholder = st.empty()
+    placeholder = st.empty() # 영상 출력을 위한 빈 공간 정의
+    label_placeholder = st.empty() # 탐지된 라벨을 표시할 빈 공간 정의
 
     while st.session_state.camera_running:
         # 프레임 읽기
@@ -84,22 +85,21 @@ def show_camera():
         # 앙상블 예측 수행
         boxes, confidences, labels = ensemble_predict(frame)
 
-        # 예측 결과를 프레임에 그리기 및 집합에 라벨 추가
+        # 예측 결과를 프레임에 그리기
         draw(frame, boxes, confidences, labels)
-
-        for label in labels:
-            detected_labels.add(label)
-
-        print("\n탐지된 라벨 기록:")
-        print(detected_labels)
-        print('\n' + '==' * 50)
 
         # 프레임을 BGR에서 RGB로 변환
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame_image = Image.fromarray(frame)
 
         # 이미지 업데이트
-        placeholder.image(frame_image, use_column_width=True)
+        placeholder.image(frame_image, use_column_width=True) # 빈 공간에 프레임 이미지 업데이트
+
+        # 탐지된 라벨 업데이트
+        for label in labels:
+            detected_labels.add(label)
+
+        label_placeholder.write("탐지된 식재료: " + ", ".join(detected_labels))
 
     # 자원 해제
     cap.release()
