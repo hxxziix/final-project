@@ -41,6 +41,18 @@ with col2:
 empty1 = st.empty()
 empty1.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
 
+# 버튼 클릭 여부를 확인하기 위한 상태 변수
+if 'button_clicked' not in st.session_state:
+    st.session_state.button_clicked = False
+
+# 버튼 클릭 이벤트 처리
+def start_camera():
+    st.session_state.button_clicked = True
+
+# 버튼 크기 넓히기 위해 container 생성
+container = st.container()
+container.button("Camera Start", on_click=start_camera, use_container_width=True)
+
 def transform(frame: av.VideoFrame):
     # 프레임을 RGB로 변환
     img = frame.to_ndarray(format="bgr24")
@@ -54,19 +66,10 @@ def transform(frame: av.VideoFrame):
     return av.VideoFrame.from_ndarray(img, format="bgr24")
 
 # WebRTC 연결 설정: STUN/TURN 서버 설정
-rtc_configuration = {"iceServers": [
-        {"urls": ["stun:stun.l.google.com:19302"]}, # STUN 서버
-        
-        {"urls": ["turn:your_turn_server_ip:3478"], # TURN 서버
-         "username": "your_username",               # 사용자 이름
-         "credential": "your_password"}             # 비밀번호
-    ]
+rtc_configuration = {
+    "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}] # STUN 서버
+    # TURN 서버: 선택사항
 }
-
-# rtc_configuration = {
-#     "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}] # STUN 서버
-#     # TURN 서버: 선택사항
-# }
 
 # 스트리밍 ui
 webrtc_streamer(key="streamer", video_frame_callback=transform, rtc_configuration=rtc_configuration, sendback_audio=False)
