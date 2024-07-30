@@ -99,7 +99,19 @@ def show_camera():
         for label in labels:
             detected_labels.add(label)
 
-        label_placeholder.write("탐지된 식재료: " + ", ".join(detected_labels))
+        # label_placeholder.write("탐지된 식재료: " + ", ".join(detected_labels))
+            
+        if detected_labels != set():
+            label_placeholder.markdown(f"""
+                <style>
+                    .text {{
+                        font-size: 35px;
+                        color: #f481512;
+                        text-shadow: 3px  0px 0 #fff;}}
+                </style>
+                <p class="text">
+                    📸탐지된 식재료 : {",".join(detected_labels)}
+                </p>""", unsafe_allow_html=True)
 
     # 자원 해제
     cap.release()
