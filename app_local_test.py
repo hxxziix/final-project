@@ -45,6 +45,10 @@ if 'camera_running' not in st.session_state:
     st.session_state.camera_running = False  # 카메라 상태 초기화
 if 'detected_labels' not in st.session_state:
     st.session_state.detected_labels = set()  # 탐지된 라벨 초기화
+if 'modify_mode' not in st.session_state:
+    st.session_state.modify_mode = False  # 수정 모드 초기화
+if 'new_labels' not in st.session_state:
+    st.session_state.new_labels = []  # 새로 추가할 라벨 초기화
 
 # 버튼 클릭 이벤트 처리
 def start_camera():
@@ -76,6 +80,8 @@ def show_camera():
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
     label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
 
+    st.button("재료 인식 종료 및 수정", use_container_width=True, key="end_modify_button")
+
     while st.session_state.camera_running:
         # 프레임 읽기
         ret, frame = cap.read()
@@ -101,17 +107,22 @@ def show_camera():
             st.session_state.detected_labels.add(label)
 
         # 라벨 표시
-        if st.session_state.detected_labels:
-            label_placeholder.markdown(f"""
-                <style>
-                    .text {{
-                        font-size: 35px;
-                        color: #f481512;
-                        text-shadow: 3px  0px 0 #fff;}}
-                </style>
-                <p class="text">
-                    �탐지된 식재료 : {", ".join(st.session_state.detected_labels)}
-                </p>""", unsafe_allow_html=True)
+        label_placeholder.markdown(f"""
+            <style>
+                .text {{
+                    font-size: 35px;
+                    color: #f481512;
+                    text-shadow: 3px  0px 0 #fff;}}
+            </style>
+            <p class="text">
+                📸탐지된 식재료 : {", ".join(st.session_state.detected_labels)}
+            </p>""", unsafe_allow_html=True)
+        
+        # 버튼 클릭 시 수정 모드 활성화
+        if st.session_state.get("end_modify_button"):
+            st.session_state.modify_mode = True
+            st.session_state.camera_running = False
+            break
 
     # 자원 해제
     cap.release()
@@ -121,25 +132,28 @@ def show_camera():
 if st.session_state.camera_running:
     show_camera()
 
-# 재료 인식 종료 및 수정 버튼
-if not st.session_state.camera_running and st.session_state.detected_labels:
-    if st.button("재료 인식 종료 및 수정", use_container_width=True):
-        # 사용자가 탐지된 재료를 수정할 수 있는 입력 필드 생성
-        st.write("탐지된 식재료 수정하기:")
-        updated_labels = []
-        for label in st.session_state.detected_labels:
+# 수정 모드가 활성화된 경우
+if st.session_state.modify_mode:
+    # 사용자가 탐지된 재료를 수정할 수 있는 입력 필드 생성
+    st.write("탐지된 식재료 수정하기:")
+    updated_labels = []
+    for label in st.session_state.detected_labels:
+        if label not in st.session_state.new_labels:
             new_label = st.text_input(f"{label} 수정:", value=label)
             updated_labels.append(new_label)
 
-        # 추가할 식재료 입력 필드
-        additional_label = st.text_input("추가할 식재료:", "")
+    # 추가할 식재료 입력 필드
+    additional_label = st.text_input("추가할 식재료:", "")
 
-        # 업데이트 버튼
-        if st.button("업데이트", use_container_width=True):
-            # 수정된 재료 목록을 다시 설정
-            st.session_state.detected_labels = set(updated_labels)
-            if additional_label:
-                st.session_state.detected_labels.add(additional_label)
+    # 추가된 라벨 관리
+    if additional_label and additional_label not in st.session_state.detected_labels:
+        st.session_state.new_labels.append(additional_label)  # 추가된 라벨을 저장
 
-            st.success("재료가 업데이트되었습니다!")
-            st.write("최종 탐지된 식재료: ", ", ".join(st.session_state.detected_labels))
+    # 업데이트 버튼
+    if st.button("업데이트", use_container_width=True):
+        # 수정된 재료 목록을 다시 설정
+        st.session_state.detected_labels = set(updated_labels).union(st.session_state.new_labels)  # 새로 추가된 라벨과 기존 라벨 병합
+        st.session_state.new_labels = []  # 추가된 라벨 초기화
+
+        st.success("재료가 업데이트되었습니다!")
+        st.write("나의 최종 식재료: ", ", ".join(st.session_state.detected_labels))
