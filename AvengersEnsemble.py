@@ -23,9 +23,9 @@ def ensemble_predict(image):
         return [], [], []
 
     # 과반수 이상의 모델이 바운딩 박스가 없는 경우
-    if sum(count == 0 for count in detection_counts) >= len(models) / 2: # count가 0인 모델의 수가 과반수 이상인지 검사
-        print("\n과반수 이상의 모델이 객체를 감지하지 못하여 화면에 표시하지 않음.")
-        return [], [], []
+    # if sum(count == 0 for count in detection_counts) >= len(models) / 2: # count가 0인 모델의 수가 과반수 이상인지 검사
+    #     print("\n과반수 이상의 모델이 객체를 감지하지 못하여 화면에 표시하지 않음.")
+    #     return [], [], []
 
     combined_results = combine_results(*results)  # final_boxes, final_confidences, final_labels
     return combined_results
@@ -158,7 +158,7 @@ def iou(box1, box2):
 
 
 # 모델 파일명 리스트
-model_files = [f'models/model{model_number}.pt' for model_number in [1, 2, 3, 4, 5, 6, 7, 9, 11, 12]] # 밴: model8, model10
+model_files = [f'models/model{model_number}.pt' for model_number in range(1, 9)]
 
 # 모델 로드 및 names 저장
 models = []
