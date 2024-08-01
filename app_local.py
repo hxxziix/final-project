@@ -224,12 +224,6 @@ if st.session_state.search_mode and st.session_state.detected_labels:
             # 인식한 식재료 중 하나라도 포함된 레시피 추천
             recipe_results = search_include_at_least_one(st.session_state.detected_labels)
         
-        # recipe_results = recipe_results.sort_values(by='추천수', ascending=False)
-        # st.subheader("추천순 레시피🧑‍🍳")
-        # st.write(recipe_results)
-            
-        # 열의 모든값 정수로 변환후 정렬
-        recipe_results['추천수'] = pd.to_numeric(recipe_results['추천수'], errors='coerce')
         recipe_results = recipe_results.sort_values(by='추천수', ascending=False)
         st.subheader("추천순 레시피🧑‍🍳")
         st.write(recipe_results)
@@ -242,11 +236,6 @@ if st.session_state.search_mode and st.session_state.detected_labels:
             # 인식한 식재료 중 하나라도 포함된 레시피 추천
             recipe_results = search_include_at_least_one(st.session_state.detected_labels)
         
-        # recipe_results = recipe_results.sort_values(by='조회수', ascending=False)
-        # st.subheader("조회순 레시피🧑‍🍳")
-        # st.write(recipe_results)
-        
-        recipe_results['조회수'] = pd.to_numeric(recipe_results['조회수'], errors='coerce')
         recipe_results = recipe_results.sort_values(by='조회수', ascending=False)
         st.subheader("조회순 레시피🧑‍🍳")
         st.write(recipe_results)
@@ -259,11 +248,6 @@ if st.session_state.search_mode and st.session_state.detected_labels:
             # 인식한 식재료 중 하나라도 포함된 레시피 추천
             recipe_results = search_include_at_least_one(st.session_state.detected_labels)
         
-        # recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
-        # st.subheader("스크랩순 레시피🧑‍🍳")
-        # st.write(recipe_results)
-        
-        recipe_results['스크랩수'] = pd.to_numeric(recipe_results['스크랩수'], errors='coerce')
         recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
         st.subheader("스크랩순 레시피🧑‍🍳")
         st.write(recipe_results)

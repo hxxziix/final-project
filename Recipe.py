@@ -9,6 +9,21 @@ recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시
                           'CKG_IPDC': '요리소개', 'CKG_MTRL_CN': '재료리스트', 'CKG_INBUN_NM': '몇인분',
                           'CKG_DODF_NM': '요리난이도', 'CKG_TIME_NM': '요리시간', 'FIRST_REG_DT': '최초등록일시'}, inplace=True)
 
+# 데이터 수정 할 열 이름
+modify_col_data = ['추천수', '스크랩수']
+
+# 각 열에 대해 처리 수행
+for col in modify_col_data:
+    
+    # 숫자로 변환할 수 없는 값 NaN으로 변경
+    recipe_df[col] = pd.to_numeric(recipe_df[col], errors='coerce')
+    
+    # NaN => 0
+    recipe_df[col].fillna(0, inplace=True)
+    
+    # object => int64
+    recipe_df[col] = recipe_df[col].astype('int64')
+
 # 재료가 하나 이상 포함된 행들 반환하는 함수
 def search_include_at_least_one(detected_ingredient):
     # 재료 열에서 각 값을 람다함수 적용, 값은 x에 해당됨, any(): 위에서 인식된 재료 리스트중 하나라도 x에 포함되어있으면 true 반환
