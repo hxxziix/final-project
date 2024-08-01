@@ -1,8 +1,6 @@
 import pandas as pd
-import random
 
-recipe_df = pd.read_csv("C:/Users/hj/Desktop/FINAL/Final_YHJ/final-project/kr_recipe.csv")
-
+recipe_df = pd.read_csv("C:/Users/hj/Desktop/project/labels_translation/kr_recipe.csv")
 
 recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시피제목', 'CKG_NM': '요리명',
                           'RGTR_ID': '등록자ID', 'RGTR_NM': '등록자명', 'INQ_CNT': '조회수',
@@ -10,6 +8,9 @@ recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시
                           'CKG_STA_ACTO_NM': '음식분위기', 'CKG_MTRL_ACTO_NM': '재료타입', 'CKG_KND_ACTO_NM': '음식타입',
                           'CKG_IPDC': '요리소개', 'CKG_MTRL_CN': '재료리스트', 'CKG_INBUN_NM': '몇인분',
                           'CKG_DODF_NM': '요리난이도', 'CKG_TIME_NM': '요리시간', 'FIRST_REG_DT': '최초등록일시'}, inplace=True)
+
+
+# 데이터 수정 (object => int64)
 
 
 # 데이터 수정 할 열 이름

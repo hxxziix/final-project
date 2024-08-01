@@ -1,15 +1,8 @@
 import streamlit as st
-from PIL import Image
-import cv2
 from AvengersEnsemble import *
 from Draw import *
 from Recipe import *
-import json
 import random
-
-# label 번역 위한 json 파일
-with open('search_recipe/mapping_dict.json', 'r', encoding='UTF-8') as json_file:
-    kor_label = json.load(json_file)
 
 # 페이지 기본 설정
 st.set_page_config(
@@ -55,47 +48,52 @@ if 'all_ingredients' not in st.session_state:
     st.session_state.all_ingredients = False  # 체크박스 상태 초기화
 if 'mode' not in st.session_state:
     st.session_state.mode = None  # 모드 상태 초기화
+if 'modify_mode' not in st.session_state:
+    st.session_state.modify_mode = False
+if 'edit_label' not in st.session_state:
+    st.session_state.edit_label = {}
+if 'search_mode' not in st.session_state:
+    st.session_state.search_mode = False
 
 # 모드 변경 함수 정의
 def change_mode(mode):
     st.session_state.mode = mode
     st.session_state.detected_labels = set()  # 모드 변경 시 탐지된 라벨 초기화
+    st.experimental_rerun()
 
 # 카메라 검색일 때 촬영 버튼 클릭 이벤트 처리
 def start_camera():
     st.session_state.camera_running = True
+    st.session_state.detected_labels.clear()
+    st.session_state.modify_mode = False
 
 def stop_camera():
     st.session_state.camera_running = False
 
-
 # 체크박스 추가
 st.session_state.all_ingredients = st.checkbox("모든 재료가 포함된 레시피만 보기")
 
-# 촬영하여 검색 및 식재료 입력으로 검색 버튼 추가
-col3, col4, col5 = st.columns(3)
+if st.session_state.mode == None:
+    # 촬영하여 검색 및 식재료 입력으로 검색 버튼 추가
+    col3, col4, col5 = st.columns(3)
 
-# 카메라 검색 버튼
-with col3:
-    c3 = st.container()
-    if c3.button("촬영하여 검색", use_container_width=True):
-        change_mode('camera')
+    # 카메라 검색 버튼
+    with col3:
+        c3 = st.container()
+        if c3.button("촬영하여 검색", use_container_width=True):
+            change_mode('camera')
 
-# 입력 검색 버튼
-with col4:
-    c4 = st.container()
-    if c4.button("식재료 입력으로 검색", use_container_width=True):
-        change_mode('input')
+    # 입력 검색 버튼
+    with col4:
+        c4 = st.container()
+        if c4.button("식재료 입력으로 검색", use_container_width=True):
+            change_mode('input')
 
-# 랜덤 추천 버튼
-with col5:
-    c5 = st.container()
-    if c5.button("레시피 랜덤 추천", use_container_width=True):
-        change_mode('random')
-
-
-placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
-
+    # 랜덤 추천 버튼
+    with col5:
+        c5 = st.container()
+        if c5.button("레시피 랜덤 추천", use_container_width=True):
+            change_mode('random')
 
 # 카메라 검색 함수
 def show_camera():
@@ -105,10 +103,12 @@ def show_camera():
         if not cap.isOpened():
             st.error("오류: 웹캠이 열려있지 않음.")
             return
-        
-        detected_labels = set()
-        # placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
-        # label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
+
+        def end_modify():
+            st.session_state.modify_mode = True
+            st.session_state.camera_running = False
+
+        st.button("재료 인식 종료 및 수정", use_container_width=True, on_click=end_modify)
 
         while st.session_state.camera_running:
             # 프레임 읽기
@@ -121,10 +121,10 @@ def show_camera():
             boxes, confidences, labels = ensemble_predict(frame)
 
             # 예측 결과를 프레임에 그리기
-            draw(frame, boxes, confidences, labels)
+            output_image = draw_with_pil(frame, boxes, confidences, labels)
 
             # 프레임을 BGR에서 RGB로 변환
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
             frame_image = Image.fromarray(frame)
 
             # 이미지 업데이트
@@ -132,100 +132,154 @@ def show_camera():
 
             # 탐지된 라벨 업데이트
             for label in labels:
-                detected_labels.add(label)
+                st.session_state.detected_labels.add(label)
             
-            st.session_state.detected_labels = [kor_label[label] if label in kor_label else label for label in detected_labels]
-            
-            
-            if st.session_state.detected_labels:
-                label_placeholder.markdown(f"""
-                    <style>
-                        .text {{
-                            font-size: 35px;
-                            color: #f481512;
-                            text-shadow: 3px  0px 0 #fff;}}
-                    </style>
-                    <p class="text">
-                        📸탐지된 식재료 : {",".join(st.session_state.detected_labels)}
-                    </p>""", unsafe_allow_html=True)
-
-
+            label_placeholder.markdown(f"""
+                <style>
+                    .text {{
+                        font-size: 35px;
+                        color: #f481512;
+                        text-shadow: 3px  0px 0 #fff;}}
+                </style>
+                <p class="text">
+                    📸탐지된 식재료 : {",".join(st.session_state.detected_labels)}
+                </p>""", unsafe_allow_html=True)
 
         # 자원 해제
         cap.release()
         cv2.destroyAllWindows()
 
+# 수정 모드가 활성화된 경우
+if st.session_state.modify_mode:
+    def back_to_main():
+        st.session_state.modify_mode = False
+        st.session_state.camera_running = False
+    
+    st.button("🔙", on_click=back_to_main)
+
+    st.write("나의 식재료:")
+
+    for label in list(st.session_state.detected_labels):
+        if label not in st.session_state.edit_label:
+            st.session_state.edit_label[label] = False
+
+        col1, col2, col3 = st.columns([6, 1, 1])
+        
+        with col1:
+            if st.session_state.edit_label[label]:
+                changed_label = st.text_input(f"'{label}'을(를) 무엇으로 바꾸시겠습니까?", value=label, key=f"label_{label}")
+            else:
+                st.write(label)
+        
+        with col2:
+            if st.session_state.edit_label[label]:
+                if st.button("확인", key=f"confirm_{label}"):
+                    st.session_state.detected_labels.remove(label)
+                    st.session_state.detected_labels.add(changed_label)
+                    st.session_state.edit_label[label] = False
+                    st.experimental_rerun()
+            else:
+                if st.button("수정", key=f"modify_{label}"):
+                    st.session_state.edit_label[label] = True
+                    st.experimental_rerun()
+        
+        with col3:
+            if st.button("삭제", key=f"delete_{label}"):
+                st.session_state.detected_labels.remove(label)
+                st.experimental_rerun()
+
+    new_label_input = st.text_input("새 재료가 있다면 추가하세요.", key="new_label_input")
+    if st.button("재료 추가"):
+        if new_label_input:
+            st.session_state.detected_labels.add(new_label_input)
+            st.experimental_rerun()
+
+    if st.button("다음"):
+        st.session_state.modify_mode = False
+        st.session_state.search_mode = True
+        st.experimental_rerun()
+
+# 검색 모드가 활성화된 경우
+if st.session_state.search_mode and st.session_state.detected_labels:
+    def back_to_main():
+        st.session_state.modify_mode = True
+        st.session_state.search_mode = False
+    
+    st.button("🔙", on_click=back_to_main)
+
+    sort = st.radio(
+        "정렬 기준",
+        ["추천순", "조회순", "스크랩순"],
+        captions=[
+            "추천이 가장 많은 레시피 순서",
+            "가장 많이 조회한 레시피 순서",
+            "스크랩이 많이 된 레시피 순서",
+        ], index=None)
+    if sort == '추천순':
+        if st.session_state.all_ingredients:
+            # 모든 재료가 포함된 레시피 추천
+            recipe_results = search_all_include(st.session_state.detected_labels)
+        else:
+            # 인식한 식재료 중 하나라도 포함된 레시피 추천
+            recipe_results = search_include_at_least_one(st.session_state.detected_labels)
+        
+        # recipe_results = recipe_results.sort_values(by='추천수', ascending=False)
+        # st.subheader("추천순 레시피🧑‍🍳")
+        # st.write(recipe_results)
+            
+        # 열의 모든값 정수로 변환후 정렬
+        recipe_results['추천수'] = pd.to_numeric(recipe_results['추천수'], errors='coerce')
+        recipe_results = recipe_results.sort_values(by='추천수', ascending=False)
+        st.subheader("추천순 레시피🧑‍🍳")
+        st.write(recipe_results)
+
+    elif sort == '조회순':
+        if st.session_state.all_ingredients:
+            # 모든 재료가 포함된 레시피 추천
+            recipe_results = search_all_include(st.session_state.detected_labels)
+        else:
+            # 인식한 식재료 중 하나라도 포함된 레시피 추천
+            recipe_results = search_include_at_least_one(st.session_state.detected_labels)
+        
+        # recipe_results = recipe_results.sort_values(by='조회수', ascending=False)
+        # st.subheader("조회순 레시피🧑‍🍳")
+        # st.write(recipe_results)
+        
+        recipe_results['조회수'] = pd.to_numeric(recipe_results['조회수'], errors='coerce')
+        recipe_results = recipe_results.sort_values(by='조회수', ascending=False)
+        st.subheader("조회순 레시피🧑‍🍳")
+        st.write(recipe_results)
+
+    elif sort == '스크랩순':
+        if st.session_state.all_ingredients:
+            # 모든 재료가 포함된 레시피 추천
+            recipe_results = search_all_include(st.session_state.detected_labels)
+        else:
+            # 인식한 식재료 중 하나라도 포함된 레시피 추천
+            recipe_results = search_include_at_least_one(st.session_state.detected_labels)
+        
+        # recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
+        # st.subheader("스크랩순 레시피🧑‍🍳")
+        # st.write(recipe_results)
+        
+        recipe_results['스크랩수'] = pd.to_numeric(recipe_results['스크랩수'], errors='coerce')
+        recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
+        st.subheader("스크랩순 레시피🧑‍🍳")
+        st.write(recipe_results)
 
 # 촬영하여 검색 버튼 눌렀을 때
 if st.session_state.mode == 'camera':
-    
-    # 카메라 버튼 추가
-    if not st.session_state.camera_running:
-        st.button("Camera Start", on_click=start_camera, use_container_width=True)
 
-    if st.session_state.camera_running:
-        st.button("Camera Stop", on_click=stop_camera, use_container_width=True)
+    # 카메라 시작 버튼
+    if not st.session_state.camera_running and not st.session_state.modify_mode and not st.session_state.search_mode:
+        st.button("Camera Start", on_click=start_camera, use_container_width=True)
     
-    label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의  
-      
+    placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
+    label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
+
     # 버튼이 클릭되었을 때 카메라 화면 표시 함수 호출
     if st.session_state.camera_running:
         show_camera()
-        
-    # 레시피 결과 업데이트
-    if st.session_state.detected_labels:
-        sort = st.radio(
-            "정렬 기준",
-            ["추천순", "조회순", "스크랩순"],
-            captions=[
-                "추천이 가장 많은 레시피 순서",
-                "가장 많이 조회한 레시피 순서",
-                "스크랩이 많이 된 레시피 순서",
-            ], index=None)
-        label_placeholder.markdown(f"""
-            <style>
-                .text {{
-                    font-size: 35px;
-                    color: #f481512;
-                    text-shadow: 3px  0px 0 #fff;}}
-            </style>
-            <p class="text">
-                📸탐지된 식재료 : {",".join(st.session_state.detected_labels)}
-            </p>""", unsafe_allow_html=True)
-        if sort == '추천순':
-            if st.session_state.all_ingredients:
-                # 모든 재료가 포함된 레시피 추천
-                recipe_results = search_all_include(st.session_state.detected_labels)
-            else:
-                # 인식한 식재료 중 하나라도 포함된 레시피 추천
-                recipe_results = search_include_at_least_one(st.session_state.detected_labels)
-            
-            recipe_results = recipe_results.sort_values(by='추천수', ascending=False)
-            st.subheader("추천순 레시피🧑‍🍳")
-            st.write(recipe_results)
-        elif sort == '조회순':
-            if st.session_state.all_ingredients:
-                # 모든 재료가 포함된 레시피 추천
-                recipe_results = search_all_include(st.session_state.detected_labels)
-            else:
-                # 인식한 식재료 중 하나라도 포함된 레시피 추천
-                recipe_results = search_include_at_least_one(st.session_state.detected_labels)
-            
-            recipe_results = recipe_results.sort_values(by='조회수', ascending=False)
-            st.subheader("조회순 레시피🧑‍🍳")
-            st.write(recipe_results)
-        elif sort == '스크랩순':
-            if st.session_state.all_ingredients:
-                # 모든 재료가 포함된 레시피 추천
-                recipe_results = search_all_include(st.session_state.detected_labels)
-            else:
-                # 인식한 식재료 중 하나라도 포함된 레시피 추천
-                recipe_results = search_include_at_least_one(st.session_state.detected_labels)
-            
-            recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
-            st.subheader("스크랩순 레시피🧑‍🍳")
-            st.write(recipe_results)
-
 
 
 # 식재료 입력을 통한 검색
@@ -286,15 +340,6 @@ elif st.session_state.mode == 'input':
             recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
             st.subheader("스크랩순 레시피🧑‍🍳")
             st.write(recipe_results)
-
-
-
-
-
-
-
-
-
 
 # 랜덤 추천
 elif st.session_state.mode == 'random':
