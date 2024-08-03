@@ -279,5 +279,5 @@ mapping_dict = {
 }
 
 # 딕셔너리를 JSON 파일로 저장
-with open('mapping_dict.json', 'w', encoding='utf-8') as file:
+with open('translation_names.json', 'w', encoding='utf-8') as file:
     json.dump(mapping_dict, file, ensure_ascii=False, indent=4)

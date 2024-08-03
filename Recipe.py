@@ -9,6 +9,8 @@ recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시
                           'CKG_IPDC': '요리소개', 'CKG_MTRL_CN': '재료리스트', 'CKG_INBUN_NM': '몇인분',
                           'CKG_DODF_NM': '요리난이도', 'CKG_TIME_NM': '요리시간', 'FIRST_REG_DT': '최초등록일시'}, inplace=True)
 
+recipe_df = recipe_df.drop(columns=['레시피일련번호', '레시피제목', '등록자ID', '등록자명', '요리소개', '최초등록일시'])
+
 # 데이터 수정 할 열 이름
 modify_col_data = ['추천수', '스크랩수']
 
