@@ -142,26 +142,27 @@ empty1.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
 # 체크박스 추가
 st.session_state.all_ingredients_include = st.checkbox("모든 재료가 포함된 레시피만 보기")
 
-# 촬영하여 검색 및 식재료 입력으로 검색 버튼 추가
-col3, col4, col5 = st.columns(3)
+if st.session_state.search_type == None:
+    # 촬영하여 검색 및 식재료 입력으로 검색 버튼 추가
+    col3, col4, col5 = st.columns(3)
 
-# 카메라 검색 버튼
-with col3:
-    c3 = st.container()
-    if c3.button("촬영하여 검색", use_container_width=True):
-        change_mode('camera')
+    # 카메라 검색 버튼
+    with col3:
+        c3 = st.container()
+        if c3.button("촬영하여 검색", use_container_width=True):
+            change_mode('camera')
 
-# 입력 검색 버튼
-with col4:
-    c4 = st.container()
-    if c4.button("식재료 입력으로 검색", use_container_width=True):
-        change_mode('input')
+    # 입력 검색 버튼
+    with col4:
+        c4 = st.container()
+        if c4.button("식재료 입력으로 검색", use_container_width=True):
+            change_mode('input')
 
-# 랜덤 추천 버튼
-with col5:
-    c5 = st.container()
-    if c5.button("레시피 랜덤 추천", use_container_width=True):
-        change_mode('random')
+    # 랜덤 추천 버튼
+    with col5:
+        c5 = st.container()
+        if c5.button("레시피 랜덤 추천", use_container_width=True):
+            change_mode('random')
 
 # 수정 모드가 활성화된 경우
 if st.session_state.labels_modify_mode:
@@ -271,10 +272,6 @@ if st.session_state.search_type == 'camera':
     # 카메라 시작 버튼
     if not st.session_state.camera_running and not st.session_state.labels_modify_mode and not st.session_state.search_mode:
         st.button("Camera Start", on_click=start_camera, use_container_width=True)
-
-    # 카메라 종료 버튼
-    if st.session_state.camera_running:
-        st.button("Camera Stop", on_click=stop_camera, use_container_width=True)
     
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
     label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
@@ -342,7 +339,6 @@ elif st.session_state.search_type == 'input':
             recipe_results = recipe_results.sort_values(by='스크랩수', ascending=False)
             st.subheader("스크랩순 레시피🧑‍🍳")
             st.write(recipe_results)
-
 
 # 랜덤 추천
 elif st.session_state.search_type == 'random':
