@@ -5,6 +5,19 @@ from collections import Counter, defaultdict
 from torchvision.ops import nms
 import torch
 
+# 모델 파일명 리스트
+model_files = [f'models/model{model_number}.pt' for model_number in range(1, 9)]
+
+# 모델 로드 및 names 저장
+models = []
+model_names = {}
+
+# 모델파일 이름, 모델, 클래스 저장
+for model_file in model_files:
+    model = YOLO(model_file)
+    models.append((model_file, model)) # 모델 파일 이름도 같이 저장함
+    model_names[model_file] = model.names
+
 # 모든 모델 예측 수행, 결과 담기
 def ensemble_predict(image):
     results = []
@@ -155,17 +168,3 @@ def iou(box1, box2):
     union = box1_area + box2_area - intersection  # 두 박스의 합집합 영역에서 교집합 영역을 뺀 값
 
     return intersection / union if union > 0 else 0  # 교집합 면적을 합집합 면적으로 나눈값
-
-
-# 모델 파일명 리스트
-model_files = [f'models/model{model_number}.pt' for model_number in range(1, 9)]
-
-# 모델 로드 및 names 저장
-models = []
-model_names = {}
-
-# 모델파일 이름, 모델, 클래스 저장
-for model_file in model_files:
-    model = YOLO(model_file)
-    models.append((model_file, model)) # 모델 파일 이름도 같이 저장함
-    model_names[model_file] = model.names

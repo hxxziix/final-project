@@ -1,7 +1,8 @@
 import cv2
-from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 
+# opencv는 한글 텍스트를 출력하지 못한다.
 # def draw(image, boxes, confidences, labels):
 #     print("\n최종 결정:")
 #     if len(boxes) > 0:
@@ -16,6 +17,7 @@ import numpy as np
 #             # 박스 좌표, 신뢰도, 라벨이름 출력
 #             print(f'박스 좌표: {box}, 신뢰도: {conf}, 라벨: {label_name}')
 
+# Pillow를 사용하여 한글 텍스트를 출력한다.
 def draw_with_pil(image, boxes, confidences, labels):
     print("\n최종 결정:")
     
@@ -47,7 +49,3 @@ def draw_with_pil(image, boxes, confidences, labels):
     image_with_boxes = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
     
     return image_with_boxes
-
-# 사용 예시
-# image는 OpenCV로 로드한 이미지, boxes, confidences, labels는 해당 데이터들
-# output_image = draw_with_pil(image, boxes, confidences, labels)
