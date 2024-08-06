@@ -5,6 +5,7 @@ from Recipe import *
 from camera_page import *
 from input_page import *
 from random_page import *
+from streamlit_option_menu import option_menu
 
 
 # ===================================================================================================
@@ -30,6 +31,7 @@ if 'reset' not in st.session_state:
     st.session_state.reset = False # 처음으로 돌아가기 버튼 상태 초기화
 
 
+
 # ===================================================================================================
 
 # 함수
@@ -48,7 +50,7 @@ def back_to_main():
     st.session_state.edit_label = {}
     st.session_state.search_mode = False
     st.session_state.first_page = False
-    st.session_state.page = "옵션 선택"
+    st.session_state.page = None
     st.session_state.reset = True  # 상태 변경을 트리거하기 위한 변수
 
 
@@ -136,16 +138,20 @@ def main():
         st.session_state.reset = False
         st.experimental_rerun()
     
+
     side, main = st.columns([1, 9])
 
     with side:
-        st.sidebar.title("메뉴")
-        menu = ["옵션 선택", "카메라", "직접 입력", "랜덤 추천"]
-        select_page = st.sidebar.selectbox("", options=menu, index=0)
-        change_page(select_page)
-
+        with st.sidebar:
+            menu = option_menu("메뉴", ["메인 화면", "카메라", "직접 입력", "랜덤 추천"], icons=['house', 'camera', 'pencil', 'shuffle'], # 아이콘 추가
+        menu_icon="cast", # 기본 메뉴 아이콘
+        default_index=0, # 기본 선택된 인덱스
+        )
+            change_page(menu)
     with main:
-        if st.session_state.page == "옵션 선택":
+        # if st.session_state.page == "옵션 선택":
+        #     home()
+        if st.session_state.page == "메인 화면":
             home()
             
         if st.session_state.page == "카메라":
@@ -181,7 +187,7 @@ st.set_page_config(
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/zz.jpg?raw=true");
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/table-wood-fresh-organic.jpg?raw=true");
         background-color: #dcd0c3;
         background-size: cover;
         background-position: center;
