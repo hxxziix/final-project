@@ -1,5 +1,4 @@
 import streamlit as st
-from Recipe import *
 from camera_page import *
 from input_page import *
 from random_page import *
@@ -7,30 +6,30 @@ from random_page import *
 # =========================================================================================================
 # 세션 상태 변수
 
-if 'all_ingredients_include' not in st.session_state:
-    st.session_state.all_ingredients_include = False  # "모든 재료가 포함된 레시피만 보기" 체크박스 상태 초기화
 if 'search_type' not in st.session_state:
-    st.session_state.search_type = "옵션 선택"  # 검색 타입 초기화
+    st.session_state.search_type = "옵션 선택" # 검색 타입 초기화
 if 'camera_running' not in st.session_state:
-    st.session_state.camera_running = False  # 카메라 활성화 상태 초기화
+    st.session_state.camera_running = False # 카메라 활성화 상태 초기화
 if 'detected_labels' not in st.session_state:
-    st.session_state.detected_labels = set()  # 탐지된 라벨 집합 초기화
+    st.session_state.detected_labels = set() # 탐지된 라벨 집합 초기화
 if 'finish_recognizing' not in st.session_state:
     st.session_state.finish_recognizing_button = False # 인식 마치기 버튼 활성화 상태 초기화
-if 'labels_modify_mode' not in st.session_state:
-    st.session_state.labels_modify_mode = False # 라벨 수정모드 상태 초기화
+if 'labels_modify_page' not in st.session_state:
+    st.session_state.labels_modify_page = False # 라벨 수정 페이지 활성화 상태 초기화
 if 'edit_label' not in st.session_state:
     st.session_state.edit_label = {} # 라벨별 수정 가능여부 상태 초기화
-if 'search_recipe_mode' not in st.session_state:
-    st.session_state.search_recipe_mode = False # 검색 모드 상태 초기화
+if 'all_ingredients_include' not in st.session_state:
+    st.session_state.all_ingredients_include = False # "모든 재료가 포함된 레시피만 보기" 체크박스 상태 초기화
+if 'search_recipe_page' not in st.session_state:
+    st.session_state.search_recipe_page = False # 검색 페이지 활성화 상태 초기화
 if 'first_page' not in st.session_state:
     st.session_state.first_page = False
 
 # =========================================================================================================
 # 함수
 
-def change_page(select_page):
-    st.session_state.search_type = select_page
+def change_page(selected_search_type):
+    st.session_state.search_type = selected_search_type
     
 def home():
         # time.sleep(2)
@@ -117,8 +116,8 @@ def main():
     with side:
         st.sidebar.title("메뉴")
         menu = ["옵션 선택", "카메라", "직접 입력", "랜덤 추천"]
-        select_page = st.sidebar.selectbox("", options=menu, index=menu.index(st.session_state.search_type))
-        change_page(select_page)
+        selected_search_type = st.sidebar.selectbox("", options=menu, index=menu.index(st.session_state.search_type))
+        change_page(selected_search_type)
         
         page_bg_img = '''
             <style>
@@ -139,29 +138,25 @@ def main():
             '''
         st.markdown(page_bg_img, unsafe_allow_html=True)
     with main:
-        # time.sleep(1) 
         if st.session_state.search_type == "옵션 선택":
             home()
             
         if st.session_state.search_type == "카메라":
-            change_page("카메라")
             st.session_state.all_ingredients_include = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
             st.sidebar.button("**처음으로 돌아가기**")
-            camera()
+            camera_page()
         
         if st.session_state.search_type == "직접 입력":
-            change_page("직접 입력")
             st.session_state.all_ingredients_include = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
             st.sidebar.button("**처음으로 돌아가기**")
             text_input()
         
         if st.session_state.search_type == "랜덤 추천":
-            change_page("랜덤 추천")
             st.sidebar.button("**처음으로 돌아가기**")
             random_page()
 
 # =========================================================================================================
-# UI
+# 페이지 함수 호출
 
 # 페이지 기본 설정
 st.set_page_config(
