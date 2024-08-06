@@ -10,22 +10,24 @@ from random_page import *
 # ===================================================================================================
 
 # 상태 변수 초기화
-if 'page' not in st.session_state:
-    st.session_state.page = "옵션 선택"
+if 'all_ingredients_include' not in st.session_state:
+    st.session_state.all_ingredients_include = False  # "모든 재료가 포함된 레시피만 보기" 체크박스 상태 초기화
+if 'search_type' not in st.session_state:
+    st.session_state.search_type = "옵션 선택"  # 검색 타입 초기화
 if 'camera_running' not in st.session_state:
-    st.session_state.camera_running = False
+    st.session_state.camera_running = False  # 카메라 활성화 상태 초기화
 if 'detected_labels' not in st.session_state:
-    st.session_state.detected_labels = set()
-if 'all_ingredients' not in st.session_state:
-    st.session_state.all_ingredients = False
-if 'modify_mode' not in st.session_state:
-    st.session_state.modify_mode = False
+    st.session_state.detected_labels = set()  # 탐지된 라벨 집합 초기화
+if 'finish_recognizing' not in st.session_state:
+    st.session_state.finish_recognizing_button = False # 인식 마치기 버튼 활성화 상태 초기화
+if 'labels_modify_mode' not in st.session_state:
+    st.session_state.labels_modify_mode = False # 라벨 수정모드 상태 초기화
 if 'edit_label' not in st.session_state:
-    st.session_state.edit_label = {}
-if 'search_mode' not in st.session_state:
-    st.session_state.search_mode = False
+    st.session_state.edit_label = {} # 라벨별 수정 가능여부 상태 초기화
+if 'search_recipe_mode' not in st.session_state:
+    st.session_state.search_recipe_mode = False # 검색 모드 상태 초기화
 if 'reset' not in st.session_state:
-    st.session_state.reset = False
+    st.session_state.reset = False # 처음으로 돌아가기 버튼 상태 초기화
 
 
 # ===================================================================================================
@@ -57,11 +59,11 @@ def home():
     # empty.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
 
     # 이미지와 제목을 한 줄에 나란히 표시하기 위해 column 두개로 나눔
-    # col1, col2 = st.columns([3, 8])
+    # col1, _ = st.columns([5, 10])
 
-    # col1 위치에 이미지
+    # # # col1 위치에 이미지
     # with col1:
-    st.image('app_gui/title.png', width=600)
+    st.image('app_gui/title.png', width=650)
 
     # col2 위치에 프젝 이름
     # with col2:
@@ -175,12 +177,12 @@ st.set_page_config(
 
 
 
-
 # background
 background = '''
     <style>
     .stApp {
         background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/zz.jpg?raw=true");
+        background-color: #dcd0c3;
         background-size: cover;
         background-position: center;
         min-height: 100vh;
