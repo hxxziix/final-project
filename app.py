@@ -66,22 +66,22 @@ def home():
     # col2 위치에 프젝 이름
     # with col2:
         # 홈페이지 중앙 제목
-    title = st.markdown("""
-    <style>
-        .title {
-            font-size: 65px;
-            font-weight: bold;
-            color: #f481512;
-            text-shadow: 3px  0px 0 #fff;
-            }
-    </style>
-    <p class=title>
-        AI 요리 비서 ✨
-    </p>""", unsafe_allow_html=True)
+    # title = st.markdown("""
+    # <style>
+    #     .title {
+    #         font-size: 65px;
+    #         font-weight: bold;
+    #         color: #f481512;
+    #         text-shadow: 3px  0px 0 #fff;
+    #         }
+    # </style>
+    # <p class=title>
+    #     AI 요리 비서 ✨
+    # </p>""", unsafe_allow_html=True)
 
     # 위치 조정을 위한 공백
-    empty1 = st.empty()
-    empty1.markdown('<div style="height: 50px;"></div>', unsafe_allow_html=True)
+    # empty1 = st.empty()
+    # empty1.markdown('<div style="height: 50px;"></div>', unsafe_allow_html=True)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -180,18 +180,18 @@ st.set_page_config(
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/z.jpg?raw=true");
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/zz.jpg?raw=true");
         background-size: cover;
         background-position: center;
         min-height: 100vh;
     }
     .stApp > header {
-        background-color: #d9be5d;
+        background-color: #f2e4d7;
         background-size: cover;
     }
 
     .st-emotion-cache-6qob1r {
-        background-color: #90EE90;  /* 연한 녹색 */
+        background-color: #dcd0c3;  /* 연한 녹색 */
         background-size: cover;
     }
     </style>
