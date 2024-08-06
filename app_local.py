@@ -21,8 +21,8 @@ if 'labels_modify_mode' not in st.session_state:
     st.session_state.labels_modify_mode = False # 라벨 수정모드 상태 초기화
 if 'edit_label' not in st.session_state:
     st.session_state.edit_label = {} # 라벨별 수정 가능여부 상태 초기화
-if 'search_mode' not in st.session_state:
-    st.session_state.search_mode = False # 검색 모드 상태 초기화
+if 'search_recipe_mode' not in st.session_state:
+    st.session_state.search_recipe_mode = False # 검색 모드 상태 초기화
 
 # =========================================================================================================
 # 함수
@@ -211,14 +211,14 @@ if st.session_state.labels_modify_mode:
 
     if st.button("다음"):
         st.session_state.labels_modify_mode = False
-        st.session_state.search_mode = True
+        st.session_state.search_recipe_mode = True
         st.experimental_rerun()
 
 # 검색 모드가 활성화된 경우
-if st.session_state.search_mode and st.session_state.detected_labels:
+if st.session_state.search_recipe_mode and st.session_state.detected_labels:
     def back_to_main():
         st.session_state.labels_modify_mode = True
-        st.session_state.search_mode = False
+        st.session_state.search_recipe_mode = False
     
     st.button("🔙", on_click=back_to_main)
 
@@ -270,7 +270,7 @@ if st.session_state.search_mode and st.session_state.detected_labels:
 if st.session_state.search_type == 'camera':
 
     # 카메라 시작 버튼
-    if not st.session_state.camera_running and not st.session_state.labels_modify_mode and not st.session_state.search_mode:
+    if not st.session_state.camera_running and not st.session_state.labels_modify_mode and not st.session_state.search_recipe_mode:
         st.button("Camera Start", on_click=start_camera, use_container_width=True)
     
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
