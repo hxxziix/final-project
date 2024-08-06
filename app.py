@@ -125,23 +125,7 @@ def main():
         select_page = st.sidebar.selectbox("", options=menu, index=menu.index(st.session_state.page))
         change_page(select_page)
         
-        page_bg_img = '''
-            <style>
-            .stApp {
-                background-color: #ff0;
-                background-size: cover;
-            }
-            .stApp > header {
-                background-color: #ff0;
-                background-size: cover;
-            }
 
-            .st-emotion-cache-6qob1r {
-                background-color: #90EE90;  /* 연한 녹색 */
-                background-size: cover;
-            }
-            </style>
-            '''
         st.markdown(page_bg_img, unsafe_allow_html=True)
     with main:
         # time.sleep(1) 
@@ -149,21 +133,39 @@ def main():
             home()
             
         if st.session_state.page == "카메라":
-            change_page("카메라")
             st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
-            st.sidebar.button("**처음으로 돌아가기**")
             camera()
+            st.sidebar.button("**처음으로 돌아가기**")
         
         if st.session_state.page == "직접 입력":
-            change_page("직접 입력")
             st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
             st.sidebar.button("**처음으로 돌아가기**")
             text_input()
         
         if st.session_state.page == "랜덤 추천":
-            change_page("랜덤 추천")
             st.sidebar.button("**처음으로 돌아가기**")
             random_page()
+
+
+
+# 배경 부분
+page_bg_img = '''
+    <style>
+    .stApp {
+        background-color: #ff0;
+        background-size: cover;
+    }
+    .stApp > header {
+        background-color: #ff0;
+        background-size: cover;
+    }
+
+    .st-emotion-cache-6qob1r {
+        background-color: #90EE90;  /* 연한 녹색 */
+        background-size: cover;
+    }
+    </style>
+    '''
 
 
 if __name__ == "__main__":
