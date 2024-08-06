@@ -181,7 +181,7 @@ background = '''
     <style>
     .stApp {
         background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back.png?raw=true");
-        background-size: contain;
+        background-size: cover;
         background-position: center;
         min-height: 100vh;
     }
