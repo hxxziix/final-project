@@ -39,6 +39,9 @@ def labels_modify_page():
             st.experimental_rerun()
 
     if st.button("다음"):
-        st.session_state.labels_modify_page = False
-        st.session_state.search_recipe_page = True
-        st.experimental_rerun()
+        if st.session_state.detected_labels:
+            st.session_state.labels_modify_page = False
+            st.session_state.search_recipe_page = True
+            st.experimental_rerun()
+        else:
+            st.write("재료가 없습니다!")

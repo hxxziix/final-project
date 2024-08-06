@@ -82,6 +82,10 @@ def camera_page():
     elif st.session_state.search_recipe_page:
         # 레시피 검색 페이지 진입
         search_recipe_page()
+        
+        if st.session_state.cook:
+            # 요리 안내
+            cook()
     else:
         _, col1, _ = st.columns([3, 10, 1])
 
