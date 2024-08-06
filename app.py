@@ -91,14 +91,15 @@ def home():
     subtitle = st.markdown("""
                 <style>
                     .subtitle {
-                        font-size: 20px;
+                        font-size: 29px;
                         color: #f481512;
                         font-family: 'Fira Code';
                         font-weight: bold;
-                        background-color: #CDBDEB;
-                        color: #9A81B0;
+                        color: #4f704b;
                         border-radius: 8px;
-                        border: 2px solid #fff;
+                        background-color: #e3fedb;
+                        border: 10px outset #c0fdb4;
+                        text-shadow: 3px  3px 0 #fff;
                         margin: 50px 0px 50px 0px;
                         border-radius: 8px;
                         padding: 10px 0px 10px 0px;
@@ -106,18 +107,21 @@ def home():
                         }
                 </style>
                 <p class=subtitle>
-                    옵션 선택 창에서 사용하실 메뉴를 선택해주세요.
+                    사용하실 메뉴를 선택해 주세요
                 </p>
                         """, unsafe_allow_html=True)
 
-    # 첫 화면 아래 설명글 두번째
+
+    # # 첫 화면 아래 설명글 두번째
     explanation = st.markdown("""
                 <style>
                     .explanation {
                         font-size: 20px;
-                        color: #9A81B0;
+                        color: #4f704b;
                         font-weight: bold;
-                        background-color: #CDBDEB;
+                        background-color: #e3fedb;
+                        border: 10px outset #c0fdb4;
+                        text-shadow: 2px  2px 0 #fff;
                         font-family: 'Fira Code';
                         text-align: left;
                         padding: 10px 40px 10px 40px;
@@ -199,7 +203,7 @@ background = '''
     }
 
     .st-emotion-cache-6qob1r {
-        background-color: #dcd0c3;  /* 연한 녹색 */
+        background-color: #dcd0c3;
         background-size: cover;
     }
     </style>
