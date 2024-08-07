@@ -13,25 +13,28 @@ from streamlit_option_menu import option_menu
 # 상태 변수 초기화
 if 'all_ingredients_include' not in st.session_state:
     st.session_state.all_ingredients_include = False  # "모든 재료가 포함된 레시피만 보기" 체크박스 상태 초기화
-if 'search_type' not in st.session_state:
-    st.session_state.search_type = "옵션 선택"  # 검색 타입 초기화
+if 'search_recipe_page' not in st.session_state:
+    st.session_state.search_recipe_page = False # 검색 페이지 활성화 상태
 if 'camera_running' not in st.session_state:
     st.session_state.camera_running = False  # 카메라 활성화 상태 초기화
 if 'detected_labels' not in st.session_state:
     st.session_state.detected_labels = set()  # 탐지된 라벨 집합 초기화
 if 'finish_recognizing' not in st.session_state:
     st.session_state.finish_recognizing_button = False # 인식 마치기 버튼 활성화 상태 초기화
-if 'labels_modify_mode' not in st.session_state:
-    st.session_state.labels_modify_mode = False # 라벨 수정모드 상태 초기화
+# if 'labels_modify_mode' not in st.session_state:
+#     st.session_state.labels_modify_mode = False # 라벨 수정모드 상태 초기화
+if 'labels_modify_page' not in st.session_state:
+    st.session_state.labels_modify_page = False # 라벨 수정 페이지 활성화 상태
 if 'edit_label' not in st.session_state:
     st.session_state.edit_label = {} # 라벨별 수정 가능여부 상태 초기화
 if 'search_recipe_mode' not in st.session_state:
     st.session_state.search_recipe_mode = False # 검색 모드 상태 초기화
 if 'reset' not in st.session_state:
     st.session_state.reset = False # 처음으로 돌아가기 버튼 상태 초기화
-
-
-
+if 'cook' not in st.session_state:
+    st.session_state.cook = False # "요리하기" 단계 진입 활성화 상태
+if 'selected_recipe' not in st.session_state:
+    st.session_state.selected_recipe = None # 상세 레시피 정보 변수
 # ===================================================================================================
 
 # 함수
@@ -40,52 +43,24 @@ if 'reset' not in st.session_state:
 def change_page(select_page):
     st.session_state.page = select_page
 
-# 처음으로 버튼 클릭 이벤트 처리 함수
-def back_to_main():
-    # 상태 초기화
-    st.session_state.camera_running = False
-    st.session_state.detected_labels = set()
-    st.session_state.all_ingredients = False
-    st.session_state.modify_mode = False
-    st.session_state.edit_label = {}
-    st.session_state.search_mode = False
-    st.session_state.first_page = False
-    st.session_state.page = None
-    st.session_state.reset = True  # 상태 변경을 트리거하기 위한 변수
+# # 처음으로 버튼 클릭 이벤트 처리 함수
+# def back_to_main():
+#     # 상태 초기화
+#     st.session_state.camera_running = False
+#     st.session_state.detected_labels = set()
+#     st.session_state.all_ingredients = False
+#     st.session_state.modify_mode = False
+#     st.session_state.edit_label = {}
+#     st.session_state.search_mode = False
+#     st.session_state.first_page = False
+#     st.session_state.page = None
+#     st.session_state.reset = True  # 상태 변경을 트리거하기 위한 변수
 
 
 # 첫 화면 함수
 def home():
-    # 글자 중앙으로 내리기 위해 공백 생성
-    # empty = st.empty()
-    # empty.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
 
-    # 이미지와 제목을 한 줄에 나란히 표시하기 위해 column 두개로 나눔
-    # col1, _ = st.columns([5, 10])
-
-    # # # col1 위치에 이미지
-    # with col1:
     st.image('app_gui/title.png', width=650)
-
-    # col2 위치에 프젝 이름
-    # with col2:
-        # 홈페이지 중앙 제목
-    # title = st.markdown("""
-    # <style>
-    #     .title {
-    #         font-size: 65px;
-    #         font-weight: bold;
-    #         color: #f481512;
-    #         text-shadow: 3px  0px 0 #fff;
-    #         }
-    # </style>
-    # <p class=title>
-    #     AI 요리 비서 ✨
-    # </p>""", unsafe_allow_html=True)
-
-    # 위치 조정을 위한 공백
-    # empty1 = st.empty()
-    # empty1.markdown('<div style="height: 50px;"></div>', unsafe_allow_html=True)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -160,16 +135,16 @@ def main():
             
         if st.session_state.page == "카메라":
             st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
-            camera()
-            st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
+            camera_page()
+            # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
         
         if st.session_state.page == "직접 입력":
             st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
-            st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
+            # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
             text_input()
         
         if st.session_state.page == "랜덤 추천":
-            st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
+            # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
             random_page()
             
 

@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import streamlit as st
 
 def get_valid_recipe_url(recipe_name):
     # 검색 페이지 URL
@@ -82,75 +81,3 @@ def get_recipe_info(recipe_url):
         "steps": steps,
         "tips": tips_text
     }
-
-# ==================================================================================================================================
-
-# 상태 변수 초기화
-if 'selected_recipe' not in st.session_state:
-    st.session_state.selected_recipe = None
-
-# 검색 기능
-st.title("요리 레시피 검색")
-recipe_name = st.text_input("요리명을 입력하세요:")
-
-# 빈 자리표시자 생성
-status_placeholder = st.empty()
-
-if st.button("검색"):
-    if recipe_name:
-        # "검색중입니다" 텍스트 표시
-        status_placeholder.text("검색 중입니다...")
-
-        recipe_url = get_valid_recipe_url(recipe_name)
-        if recipe_url:
-            recipe_info = get_recipe_info(recipe_url)
-            st.session_state.selected_recipe = recipe_info
-        else:
-            st.text("유효한 요리 레시피를 찾을 수 없습니다.")
-        
-        # 검색 완료 후 텍스트 제거
-        status_placeholder.empty()
-
-# 검색 결과 표시
-if st.session_state.selected_recipe:
-    st.text("\n")
-    st.text("\n")
-    st.subheader("요리 정보")
-    
-    # 요리된 사진
-    st.image(st.session_state.selected_recipe["photo_url"], caption=recipe_name)
-    
-    # 재료
-    st.text("\n")
-    st.text("\n")
-    st.subheader("재료")
-    st.text(st.session_state.selected_recipe["ingredients"])
-
-    # 요리 영상
-    if st.session_state.selected_recipe["video_url"]:
-        st.text("\n")
-        st.text("\n")
-        st.subheader("요리 영상")
-        st.video(st.session_state.selected_recipe["video_url"])
-    else:
-        st.text("요리 영상이 없습니다.")
-
-    # 조리 순서
-    st.text("\n")
-    st.text("\n")
-    st.subheader("조리 순서")
-    for step in st.session_state.selected_recipe["steps"]:
-        st.text(step["text"])
-        if step["image_url"]:
-            st.image(step["image_url"])
-        st.text("\n")
-        st.text("\n")
-        st.text("\n")
-        st.text("\n")
-        st.text("\n")
-    
-    # 팁/주의사항
-    st.text("\n")
-    st.text("\n")
-    st.subheader("팁/주의사항")
-    st.text(st.session_state.selected_recipe["tips"])
