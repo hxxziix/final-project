@@ -1,14 +1,14 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 from camera_page import *
 from input_page import *
 from random_page import *
-from streamlit_option_menu import option_menu
 
 # =========================================================================================================
 # 세션 상태 변수
 
 if 'search_type' not in st.session_state:
-    st.session_state.search_type = "옵션 선택" # 검색 타입 변수
+    st.session_state.search_type = "메인 화면" # 검색 타입 변수
 if 'camera_running' not in st.session_state:
     st.session_state.camera_running = False # 카메라 활성화 상태
 if 'detected_labels' not in st.session_state:
@@ -29,9 +29,29 @@ if 'selected_recipe' not in st.session_state:
     st.session_state.selected_recipe = None # 상세 레시피 정보 변수
 if 'reset' not in st.session_state:
     st.session_state.reset = False # 처음으로 돌아가기
+if 'random_recipe' not in st.session_state:
+    st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
+if 'hide_random_recipe_details' not in st.session_state:
+    st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
 
 # =========================================================================================================
 # 함수
+
+# 모든 세션 상태 변수 초기화 함수
+def reset_session_state():
+    st.session_state.search_type = "메인 화면"
+    st.session_state.camera_running = False
+    st.session_state.detected_labels = set()
+    st.session_state.finish_recognizing_button = False
+    st.session_state.labels_modify_page = False
+    st.session_state.edit_label = {}
+    st.session_state.all_ingredients_include = False
+    st.session_state.search_recipe_page = False
+    st.session_state.cook = False
+    st.session_state.selected_recipe = None
+    st.session_state.reset = False
+    st.session_state.random_recipe = random_recipe()
+    st.session_state.hide_random_recipe_details = False
 
 def change_page(selected_search_type):
     st.session_state.search_type = selected_search_type
@@ -216,7 +236,6 @@ def main():
     if st.session_state.reset:
         st.session_state.reset = False
         st.experimental_rerun()
-    
 
     side, main = st.columns([1, 9])
 
@@ -229,12 +248,16 @@ def main():
             change_page(menu)
     with main:
         if st.session_state.search_type == "메인 화면":
+            reset_session_state() # 모든 세션 상태 변수 초기화
             home()
             
         if st.session_state.search_type == "카메라":
             camera_page()
         
         if st.session_state.search_type == "직접 입력":
+            if not st.session_state.search_recipe_page:
+                st.session_state.labels_modify_page = True
+            
             text_input()
         
         if st.session_state.search_type == "랜덤 추천":

@@ -1,12 +1,7 @@
 import streamlit as st
-import random
-from Recipe import *
+from search_recipe_page import *
 
 def random_page():
-    # recipe_df의 행 수를 사용하여 랜덤 숫자 생성
-    random_number = random.randint(0, recipe_df.shape[0] - 1) # 0부터 (행 수 - 1)까지의 숫자 생성
-    recipe_result = random_recipe(random_number)
-    
     _, col1, _ = st.columns([4, 10, 1])
 
     with col1:
@@ -43,7 +38,16 @@ def random_page():
                     }}
             </style>
             <p class=subheader>
-                요리 비서가 추천 드리는 레시피는 <br> <strong>{recipe_result['요리명']}</strong> 입니다 !
+                요리 비서가 추천 드리는 레시피는 <br> <strong>{st.session_state.random_recipe['요리명']}</strong> 입니다 !
             </p>""", unsafe_allow_html=True)
     
-    st.write(recipe_result)
+    # 결과 프레임 출력
+    st.write(st.session_state.random_recipe.to_frame().T.set_index('요리명')) # 세로로 보여지는 시리즈를 프레임으로 바꾸고 전치
+
+    # '다시 추천' 버튼 추가
+    if st.button("다시 추천"):
+        st.session_state.random_recipe = random_recipe() # 새로운 랜덤 레시피 로드
+        st.session_state.hide_random_recipe_details = True # 상세안내 목록 숨기기
+        st.experimental_rerun() # 페이지 새로고침
+    
+    cook(random_recipe=True, recipe_name=st.session_state.random_recipe['요리명'])

@@ -3,7 +3,6 @@ from AvengersEnsemble import *
 from Draw import *
 from labels_modify_page import *
 from search_recipe_page import *
-import cv2
 
 # '촬영 시작' 버튼의 콜백함수
 def enable_camera():
