@@ -58,7 +58,7 @@ def change_page(selected_search_type):
 # 첫 화면 함수
 def home():
 
-    st.image('app_gui/back_image.png', width=650)
+    st.image('app_gui/title.png', width=650)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -171,11 +171,12 @@ st.set_page_config(
 
 
 
+        # background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/table-wood-fresh-organic.jpg?raw=true");
 # background
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/table-wood-fresh-organic.jpg?raw=true");
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back_image.png?raw=true");
         background-color: #dcd0c3;
         background-size: cover;
         background-position: center;
