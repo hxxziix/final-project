@@ -1,38 +1,21 @@
 import streamlit as st
 
-
 def text_input():
 
-    _, col1, _ = st.columns([2.5, 10, 1])
-
+    _, col1, _ = st.columns([1, 10, 1])
 
     with col1:
-        st.image("app_gui/7.png")
+        st.image("app_gui/input_image.png",width=600)
 
-    header = st.markdown("""
-            <style>
-                .title {
-                        font-size: 40px;
-                        color: #f481512;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        background-color: #b3c4fa;
-                        color: #6d7df7;
-                        border-radius: 8px;
-                        text-align: center;
-                        margin: 0px 50px 20px 50px;
-            </style>
-            <p class=title>
-                식재료 입력
-            </p>""", unsafe_allow_html=True)
 
     subheader = st.markdown("""
             <style>
                 .subheader {
                     font-size: 20px;
                     text-align: center;
-                    background-color: #b3c4fa;
+                    background-color: #b6ccfb;
                     color: #6d7df7;
+                    border: 7px outset #91a8f9;
                     padding: 10px 20px 10px 20px;
                     margin: 0px 50px 0px 50px;
                     border-radius: 8px;
@@ -42,7 +25,6 @@ def text_input():
             <p class=subheader>
                 입력창에 재료를 입력하고 <strong>확인 버튼</strong>을 눌러주세요
             </p>""", unsafe_allow_html=True)
-
 
     _, col2, _ = st.columns([1, 12, 1])
     with col2:

@@ -4,33 +4,20 @@ from Recipe import *
 import time
 
 def random_page():
-    random_number = random.randint(0, 184990)
+    # 0부터 (행 수 - 1)까지의 숫자 생성
+    random_number = random.randint(0, recipe_df.shape[0] - 1)
     recipe_result = random_recipe(random_number)
     
-    _, col1, _ = st.columns([4, 10, 1])
+    
+    st.image("app_gui/11.png", width=700)
+    
+    
+    
+    _, col1, _ = st.columns([3, 10, 1])
 
 
     with col1:
-        st.image("app_gui/5.png")
-
-    header = st.markdown("""
-            <style>
-                .title {
-                        font-size: 40px;
-                        color: #f481512;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        background-color: #FAECFE;
-                        color: #B761B4;
-                        border-radius: 8px;
-                        
-                        border-radius: 8px;
-                        text-align: center;
-                        margin: 0px 0px 20px 0px;
-            </style>
-            <p class=title>
-                랜덤 추천 레시피
-            </p>""", unsafe_allow_html=True)
+        st.image("app_gui/5.png", width=400)
 
     subheader = st.markdown(f"""
             <style>
@@ -39,15 +26,15 @@ def random_page():
                     background-color: #FAECFE;
                     color: #B761B4;
                     text-align: center;
+                    border: 10px outset #e3a9fa;
                     text-shadow: 3px  0px 0 #fff;
                     border-radius: 8px;
+                    margin: 0px 0px 50px 50px;
                     }}
             </style>
             <p class=subheader>
                 요리 비서가 추천 드리는 레시피는 <br> <strong>{recipe_result['요리명']}</strong> 입니다 !
             </p>""", unsafe_allow_html=True)
-    
-
-
-    # st.subheader("랜덤 추천 레시피🧑‍🍳")
-    st.write(recipe_result)
+    _, col2, _ = st.columns([1, 8, 1])
+    with col2:  
+        st.write(recipe_result)
