@@ -1,10 +1,8 @@
 import streamlit as st
 
-
 def text_input():
 
     _, col1, _ = st.columns([2.5, 10, 1])
-
 
     with col1:
         st.image("app_gui/7.png")
@@ -42,7 +40,6 @@ def text_input():
             <p class=subheader>
                 입력창에 재료를 입력하고 <strong>확인 버튼</strong>을 눌러주세요
             </p>""", unsafe_allow_html=True)
-
 
     _, col2, _ = st.columns([1, 12, 1])
     with col2:
