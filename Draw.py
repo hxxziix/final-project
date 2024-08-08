@@ -26,8 +26,8 @@ def draw_with_pil(image, boxes, confidences, labels):
     draw = ImageDraw.Draw(image_pil)
     
     # 한글 폰트 경로 설정 (여기서는 예시로 나눔고딕 폰트를 사용)
-    font_path = "font\ONE Mobile POP.ttf"  # 실제 한글 폰트 파일 경로로 변경
-    font_size = 24
+    font_path = "font/ONE Mobile POP.ttf"  # 실제 한글 폰트 파일 경로로 변경
+    font_size = 32
     font = ImageFont.truetype(font_path, font_size)
 
     if len(boxes) > 0:
