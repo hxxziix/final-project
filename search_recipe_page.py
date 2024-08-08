@@ -4,6 +4,13 @@ from Cook import *
 
 # 검색 모드가 활성화된 경우
 def search_recipe_page():
+    if st.button("뒤로 가기"):
+        st.session_state.search_recipe_page = False
+        st.session_state.labels_modify_page = True
+        if st.session_state.selected_recipe: # 검색 내역 확인
+            st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
+        st.experimental_rerun()
+        
     st.write("나의 식재료:")
     st.write(", ".join(st.session_state.detected_labels))
 
@@ -45,33 +52,44 @@ def search_recipe_page():
         else:
             st.write("검색 결과가 없습니다.")
 
-def cook():
-    # 검색 기능
+def cook(random_recipe=False, recipe_name=None):
     st.text("\n")
     st.text("\n")
     st.title("레시피를 시각적으로 보여드리겠습니다!")
-    recipe_name = st.text_input("요리할 '요리명'을 입력하세요:")
 
-    # 빈 자리표시자 생성
-    status_placeholder = st.empty()
+    if not random_recipe:
+        # 검색 기능
+        recipe_name = st.text_input("요리할 '요리명'을 입력하세요:")
 
-    if st.button("검색"):
-        if recipe_name:
-            # "검색중입니다" 텍스트 표시
-            status_placeholder.text("검색 중입니다...")
+    clicked = False
+    if not random_recipe:
+        if st.button("검색"):
+            if recipe_name:
+                st.session_state.hide_random_recipe_details = False
+                clicked = True
+                status_placeholder = st.empty() # 빈 자리표시자 생성
+                status_placeholder.text("검색 중입니다...")
+    elif random_recipe:
+        if st.button(f"'{recipe_name}' 레시피 상세안내 보기"):
+            st.session_state.hide_random_recipe_details = False
+            clicked = True
+            status_placeholder = st.empty() # 빈 자리표시자 생성
+            status_placeholder.text("로드 중입니다...")
 
-            recipe_url = get_valid_recipe_url(recipe_name)
-            if recipe_url:
-                recipe_info = get_recipe_info(recipe_url)
-                st.session_state.selected_recipe = recipe_info
-            else:
-                st.text("해당 '요리명' 은 시각적인 정보가 없습니다.")
-            
-            # 검색 완료 후 텍스트 제거
-            status_placeholder.empty()
+    if clicked:
+        recipe_url = get_valid_recipe_url(recipe_name)
+        if recipe_url:
+            recipe_info = get_recipe_info(recipe_url)
+            st.session_state.selected_recipe = recipe_info
+        else:
+            st.session_state.selected_recipe = None
+            st.text(f"'{recipe_name}' 레시피의 시각적인 정보를 찾지 못했습니다.")
+        
+        # 검색 완료 후 텍스트 제거
+        status_placeholder.empty()
 
     # 검색 결과 표시
-    if st.session_state.selected_recipe:
+    if st.session_state.selected_recipe and not st.session_state.hide_random_recipe_details:
         st.text("\n")
         st.text("\n")
         st.subheader("요리 안내")
@@ -86,10 +104,10 @@ def cook():
         st.text(st.session_state.selected_recipe["ingredients"])
 
         # 요리 영상
+        st.text("\n")
+        st.text("\n")
+        st.subheader("요리 영상")
         if st.session_state.selected_recipe["video_url"]:
-            st.text("\n")
-            st.text("\n")
-            st.subheader("요리 영상")
             st.video(st.session_state.selected_recipe["video_url"])
         else:
             st.text("요리 영상이 없습니다.")

@@ -5,12 +5,14 @@ from labels_modify_page import *
 from search_recipe_page import *
 import cv2
 
-# '촬영 시작' 버튼의 콜백함수
-def enable_camera():
-    st.session_state.camera_running = True
-    st.session_state.detected_labels.clear()
-    st.session_state.labels_modify_page = False
 
+# "재료 인식 종료 및 수정" 버튼의 콜백함수
+def end_modify(): 
+    st.session_state.camera_running = False
+    st.session_state.finish_recognizing_button = False
+    st.session_state.labels_modify_page = True
+    
+    
 # 카메라 시작 함수
 def show_camera():
     # 로컬 웹캠 열기
@@ -20,13 +22,32 @@ def show_camera():
         st.error("오류: 웹캠이 열려있지 않음.")
         return
     
+    col1, _, _ = st.columns([3, 5, 5])
+    with col1:
+        st.markdown("""
+        <style>
+            .stButton>button {
+                background-color: #fdffeb;
+                color: #727421;
+                font-size: 25px;
+                font-weight: bold;
+                width: 100%;
+                height: 50px;
+                margin: 10px 0;
+                border: 7px outset #fdffb2;
+            }
+            .stButton>button:hover {
+                background-color: #ffffD3;
+                border: 7px outset #FFFF41;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+        if st.button("**뒤로 가기**"):
+            st.session_state.camera_running = False
+            st.experimental_rerun()
+        
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
     label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
-
-    def end_modify(): # "재료 인식 종료 및 수정" 버튼의 콜백함수
-        st.session_state.camera_running = False
-        st.session_state.finish_recognizing_button = False
-        st.session_state.labels_modify_page = True
 
     while st.session_state.camera_running:
         # 프레임 읽기
@@ -52,22 +73,53 @@ def show_camera():
         for label in labels:
             st.session_state.detected_labels.add(label)
         
-        # 탐지된 라벨 표시
-        label_placeholder.markdown(f"""
-            <style>
-                .text {{
-                    font-size: 35px;
-                    color: #f481512;
-                    text-shadow: 3px  0px 0 #fff;}}
-            </style>
-            <p class="text">
-                📸탐지된 식재료 : {", ".join(st.session_state.detected_labels)}
-            </p>""", unsafe_allow_html=True)
+        # 탐지된 라벨이 있을 때 박스안에 출력
+        if st.session_state.detected_labels:
+            # 탐지된 라벨 표시
+            label_placeholder.markdown(f"""
+                <style>
+                    .text {{
+                            font-size: 29px;
+                            color: #f481512;
+                            font-family: 'Fira Code';
+                            font-weight: bold;
+                            color: #727421;
+                            border-radius: 8px;
+                            background-color: #fdffeb;
+                            border: 10px dotted #fdffb2;
+                            text-shadow: 3px  3px 0 #fff;
+                            margin: 10px 0px 50px 0px;
+                            border-radius: 8px;
+                            padding: 10px 0px 10px 0px;
+                            text-align: center;
+                            }}
+                </style>
+                <p class="text">
+                    {", ".join(st.session_state.detected_labels)}
+                </p>""", unsafe_allow_html=True)
 
         # "재료 인식 종료 및 수정" 버튼 생성
         if not st.session_state.finish_recognizing_button:
             st.button("재료 인식 종료 및 수정", use_container_width=True, on_click=end_modify)
             st.session_state.finish_recognizing_button = True
+            button = st.markdown("""
+                <style>
+                .stButton>button {
+                    background-color: #fdffeb;
+                    color: #727421;
+                    font-size: 25px;
+                    font-weight: bold;
+                    width: 100%;
+                    height: 50px;
+                    margin: 10px 0;
+                    border: 7px outset #fdffb2;
+                }
+                .stButton>button:hover {
+                    background-color: #ffffD3;
+                    border: 7px outset #FFFF41;
+                }
+                </style>
+            """, unsafe_allow_html=True)
 
     # 자원 해제
     cap.release()
@@ -78,7 +130,7 @@ def camera_page():
         show_camera() # 카메라 시작 페이지 진입
     elif st.session_state.labels_modify_page:
         # 라벨 수정 페이지 진입
-        labels_modify_page()
+        camera_labels_modify_page()
     elif st.session_state.search_recipe_page:
         # 레시피 검색 페이지 진입
         search_recipe_page()
@@ -91,25 +143,6 @@ def camera_page():
 
         with col1:
             st.image("app_gui/camera3.png", width=600)
-
-        # header = st.markdown("""
-        #         <style>
-        #             .title {
-        #                     font-size: 40px;
-        #                     color: #f481512;
-        #                     font-family: 'Fira Code';
-        #                     font-weight: bold;
-        #                     background-color: #FAECFE;
-        #                     color: #B761B4;
-        #                     border-radius: 8px;
-                            
-        #                     border-radius: 8px;
-        #                     text-align: center;
-        #                     margin: 0px 0px 20px 0px;
-        #         </style>
-        #         <p class=title>
-        #             카메라 촬영
-        #         </p>""", unsafe_allow_html=True)
 
         subheader = st.markdown("""
                 <style>
@@ -132,9 +165,10 @@ def camera_page():
 
         # '촬영 시작' 버튼 생성
         with col2:
-            camera_button_placeholder = st.empty()
-            camera_button_placeholder.button("**촬영 시작**", use_container_width=True, on_click=lambda: [enable_camera(), camera_button_placeholder.empty()])
-
+            if st.button("촬영 시작"):
+                st.session_state.camera_running = True
+                st.experimental_rerun()
+                
         button = st.markdown("""
                 <style>
                 .stButton>button {

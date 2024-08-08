@@ -7,58 +7,64 @@ from input_page import *
 from random_page import *
 from streamlit_option_menu import option_menu
 
-
 # ===================================================================================================
 
-# 상태 변수 초기화
+# 세션 상태 변수
 if 'search_type' not in st.session_state:
     st.session_state.search_type = "메인 화면" # 검색 타입 변수
 if 'camera_running' not in st.session_state:
-    st.session_state.camera_running = False  # 카메라 활성화 상태 초기화
+    st.session_state.camera_running = False # 카메라 활성화 상태
 if 'detected_labels' not in st.session_state:
-    st.session_state.detected_labels = set()  # 탐지된 라벨 집합 초기화
+    st.session_state.detected_labels = set() # 탐지된 라벨 집합
 if 'finish_recognizing' not in st.session_state:
-    st.session_state.finish_recognizing_button = False # 인식 마치기 버튼 활성화 상태 초기화
+    st.session_state.finish_recognizing_button = False # 인식 마치기 버튼 활성화 상태
 if 'labels_modify_page' not in st.session_state:
     st.session_state.labels_modify_page = False # 라벨 수정 페이지 활성화 상태
 if 'edit_label' not in st.session_state:
     st.session_state.edit_label = {} # 라벨별 수정 가능여부 상태
 if 'all_ingredients_include' not in st.session_state:
-    st.session_state.all_ingredients_include = False  # "모든 재료가 포함된 레시피만 보기" 체크박스 상태 초기화
+    st.session_state.all_ingredients_include = False # "모든 재료가 포함된 레시피만 보기" 체크박스 상태
 if 'search_recipe_page' not in st.session_state:
     st.session_state.search_recipe_page = False # 검색 페이지 활성화 상태
 if 'cook' not in st.session_state:
     st.session_state.cook = False # "요리하기" 단계 진입 활성화 상태
 if 'selected_recipe' not in st.session_state:
     st.session_state.selected_recipe = None # 상세 레시피 정보 변수
-if 'reset' not in st.session_state:
-    st.session_state.reset = False # 처음으로 돌아가기 버튼 상태 초기화
+if 'random_recipe' not in st.session_state:
+    st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
+if 'hide_random_recipe_details' not in st.session_state:
+    st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
 # ===================================================================================================
 
 # 함수
 
+# 모든 세션 상태 변수 초기화 함수
+def reset_session_state():
+    st.session_state.search_type = "메인 화면"
+    st.session_state.camera_running = False
+    st.session_state.detected_labels = set()
+    st.session_state.finish_recognizing_button = False
+    st.session_state.labels_modify_page = False
+    st.session_state.edit_label = {}
+    st.session_state.all_ingredients_include = False
+    st.session_state.search_recipe_page = False
+    st.session_state.cook = False
+    st.session_state.selected_recipe = None
+    st.session_state.random_recipe = random_recipe()
+    st.session_state.hide_random_recipe_details = False
+
 # 이벤트별 페이지 전환 함수
 def change_page(selected_search_type):
-    st.session_state.search_type = selected_search_type
-
-# # 처음으로 버튼 클릭 이벤트 처리 함수
-# def back_to_main():
-#     # 상태 초기화
-#     st.session_state.camera_running = False
-#     st.session_state.detected_labels = set()
-#     st.session_state.all_ingredients = False
-#     st.session_state.modify_mode = False
-#     st.session_state.edit_label = {}
-#     st.session_state.search_mode = False
-#     st.session_state.first_page = False
-#     st.session_state.page = None
-#     st.session_state.reset = True  # 상태 변경을 트리거하기 위한 변수
+    # 현재 선택된 페이지가 변경된 경우에만 상태 초기화
+    if st.session_state.search_type != selected_search_type:
+        reset_session_state() # 모든 세션 상태 변수 초기화
+        st.session_state.search_type = selected_search_type
 
 
 # 첫 화면 함수
 def home():
 
-    st.image('app_gui/title.png', width=650)
+    st.image('app_gui/main_page.png', width=650)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -111,11 +117,6 @@ def home():
 
 # side, main 영역별 기능
 def main():
-    # if st.session_state.reset:
-    #     st.session_state.reset = False
-    #     st.experimental_rerun()
-    
-
     side, main = st.columns([1, 9])
 
     with side:
@@ -125,25 +126,7 @@ def main():
         default_index=0, # 기본 선택된 인덱스
         )
             change_page(menu)
-    # with main:
-    #     # if st.session_state.page == "옵션 선택":
-    #     #     home()
-    #     if st.session_state.page == "메인 화면":
-    #         home()
-            
-    #     if st.session_state.page == "카메라":
-    #         st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
-    #         camera_page()
-    #         # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
-        
-    #     if st.session_state.page == "직접 입력":
-    #         st.session_state.all_ingredients = st.sidebar.checkbox("모든 재료를 포함한 레시피 보기")
-    #         # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
-    #         text_input()
-        
-    #     if st.session_state.page == "랜덤 추천":
-    #         # st.sidebar.button("**처음으로 돌아가기**", on_click=back_to_main)
-    #         random_page()
+
     with main:
         if st.session_state.search_type == "메인 화면":
             home()
@@ -152,11 +135,12 @@ def main():
             camera_page()
         
         if st.session_state.search_type == "직접 입력":
+            if not st.session_state.search_recipe_page:
+                st.session_state.labels_modify_page = True
             text_input()
-        
+
         if st.session_state.search_type == "랜덤 추천":
             random_page()
-
 
 
 # ====================================================================================================
@@ -168,15 +152,11 @@ st.set_page_config(
     page_icon='app_gui/1.png'
 )
 
-
-
-
-        # background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/table-wood-fresh-organic.jpg?raw=true");
 # background
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back_image.png?raw=true");
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/background.png?raw=true");
         background-color: #dcd0c3;
         background-size: cover;
         background-position: center;

@@ -8,11 +8,18 @@ def get_valid_recipe_url(recipe_name):
     search_soup = BeautifulSoup(search_response.content, 'html.parser')
 
     # 검색 결과에서 유효한 레시피 링크를 찾기
-    for i in range(1, 11):  # 첫 10개의 검색 결과를 확인
+    for i in range(1, 41):  # 첫 페이지 40개의 결과중 동영상이 포함된 레시피 찾기
         recipe_link = search_soup.select_one(f'#contents_area_full > ul > ul > li:nth-child({i}) > div.common_sp_thumb > a')
         if recipe_link and recipe_link.find('span'):
             recipe_url = "https://www.10000recipe.com" + recipe_link['href']
             return recipe_url
+    
+    # 동영상이 포함된 레시피가 없는 경우, 첫 번째 레시피 링크 반환
+    recipe_link = search_soup.select_one(f'#contents_area_full > ul > ul > li:nth-child(1) > div.common_sp_thumb > a')
+    if recipe_link and recipe_link.find('img'):
+        recipe_url = "https://www.10000recipe.com" + recipe_link['href']
+        return recipe_url
+
     return None
 
 def get_recipe_info(recipe_url):

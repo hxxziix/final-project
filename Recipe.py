@@ -1,4 +1,5 @@
 import pandas as pd
+import random
 
 recipe_df = pd.read_csv("C:/Users/hj/Desktop/project/labels_translation/kr_recipe.csv")
 
@@ -43,6 +44,9 @@ def search_all_include(detected_ingredients):
     return search_results
 
 # 랜덤 추천
-def random_recipe(random):
-    search_results = recipe_df.iloc[random]
+def random_recipe():
+    # recipe_df의 행 수를 사용하여 랜덤 숫자 생성
+    random_number = random.randint(0, recipe_df.shape[0] - 1) # 0부터 (행 수 - 1)까지의 숫자 생성
+    search_results = recipe_df.iloc[random_number]
+    # search_results = search_results.to_frame().T # 세로로 보여지는 시리즈를 프레임으로 바꾸고 전치
     return search_results
