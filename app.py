@@ -55,6 +55,7 @@ def change_page(selected_search_type):
     if st.session_state.search_type != selected_search_type:
         reset_session_state() # 모든 세션 상태 변수 초기화
         st.session_state.search_type = selected_search_type
+        st.experimental_rerun()
 
 # 첫 화면 함수
 def home():
