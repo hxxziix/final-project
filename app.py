@@ -156,7 +156,7 @@ st.set_page_config(
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/background.png?raw=true");
+        background-image: url("C:/Users/hj/Desktop/FINAL/YHJ/final-project/app_gui/ss.png");
         background-color: #dcd0c3;
         background-size: cover;
         background-position: center;
