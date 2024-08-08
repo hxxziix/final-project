@@ -1,5 +1,5 @@
 import streamlit as st
-from labels_modify_page import labels_modify_page
+from labels_modify_page import input_labels_modify_page
 from search_recipe_page import *
 
 
@@ -8,7 +8,7 @@ def text_input():
         _, col1, _ = st.columns([1, 10, 1])
 
         with col1:
-            st.image("app_gui/input_image.png",width=600)
+            st.image("app_gui/input_icon.png",width=600)
 
         subheader = st.markdown("""
                 <style>
@@ -29,7 +29,7 @@ def text_input():
                 </p>""", unsafe_allow_html=True)
         st.text("\n")
         st.text("\n")
-        labels_modify_page()
+        input_labels_modify_page()
         
     elif st.session_state.search_recipe_page:
         # 레시피 검색 페이지 진입

@@ -12,7 +12,6 @@ def end_modify():
     st.session_state.finish_recognizing_button = False
     st.session_state.labels_modify_page = True
     
-    
 # 카메라 시작 함수
 def show_camera():
     # 로컬 웹캠 열기
@@ -142,7 +141,9 @@ def camera_page():
         col1, _ = st.columns([10,10])
 
         with col1:
-            st.image("app_gui/camera3.png", width=600)
+            empty = """<div style="height: 70px;"></div>"""
+            st.markdown(empty, unsafe_allow_html=True)
+            st.image("app_gui/camera_icon.png", width=600)
 
         subheader = st.markdown("""
                 <style>
@@ -165,25 +166,25 @@ def camera_page():
 
         # '촬영 시작' 버튼 생성
         with col2:
+            buttonCSS = st.markdown("""
+                    <style>
+                    .stButton>button {
+                        background-color: #fdffeb;
+                        color: #727421;
+                        font-size: 25px;
+                        font-weight: bold;
+                        width: 100%;
+                        height: 50px;
+                        margin: 10px 0;
+                        border: 7px outset #fdffb2;
+                    }
+                    .stButton>button:hover {
+                        background-color: #ffffD3;
+                        border: 7px outset #FFFF41;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
             if st.button("촬영 시작"):
                 st.session_state.camera_running = True
                 st.experimental_rerun()
                 
-        button = st.markdown("""
-                <style>
-                .stButton>button {
-                    background-color: #fdffeb;
-                    color: #727421;
-                    font-size: 25px;
-                    font-weight: bold;
-                    width: 100%;
-                    height: 50px;
-                    margin: 10px 0;
-                    border: 7px outset #fdffb2;
-                }
-                .stButton>button:hover {
-                    background-color: #ffffD3;
-                    border: 7px outset #FFFF41;
-                }
-                </style>
-            """, unsafe_allow_html=True)

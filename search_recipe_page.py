@@ -4,15 +4,30 @@ from Cook import *
 
 # 검색 모드가 활성화된 경우
 def search_recipe_page():
-    if st.button("뒤로 가기"):
-        st.session_state.search_recipe_page = False
-        st.session_state.labels_modify_page = True
-        if st.session_state.selected_recipe: # 검색 내역 확인
-            st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
-        st.experimental_rerun()
-        
-    st.write("나의 식재료:")
-    st.write(", ".join(st.session_state.detected_labels))
+
+
+    st.image("app_gui/user.png", width=650)
+    st.markdown(f"""
+    <style>
+        .user_ingredients {{
+            font-size: 30px;
+            color: #f481512;
+            font-family: 'Fira Code';
+            font-weight: bold;
+            color: #727421;
+            border-radius: 8px;
+            background-color: #fdffeb;
+            border: 5px dotted  #fdffb2;
+            text-shadow: 3px  3px 0 #fff;
+            text-align: center;
+            padding: 5px 5px 5px 5px;
+            margin: 50px 0px 50px 0px;
+            }}
+    </style>
+    <p class=user_ingredients>
+        {", ".join(st.session_state.detected_labels)}
+    </p>
+    """, unsafe_allow_html=True)
 
     st.session_state.all_ingredients_include = st.checkbox("모든 재료를 포함한 레시피 보기")
 
@@ -51,6 +66,29 @@ def search_recipe_page():
             st.session_state.cook = True
         else:
             st.write("검색 결과가 없습니다.")
+    st.markdown("""
+        <style>
+            .stButton>button {
+                background-color: #fdffeb;
+                color: #727421;
+                font-size: 25px;
+                font-weight: bold;
+    
+                height: 50px;
+                border:5px outset #fdffb2;
+            }
+            .stButton>button:hover {
+                background-color: #ffffD3;
+                border: 7px outset #FFFF41;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    if st.button("뒤로 가기"):
+        st.session_state.search_recipe_page = False
+        st.session_state.labels_modify_page = True
+        if st.session_state.selected_recipe: # 검색 내역 확인
+            st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
+        st.experimental_rerun()
 
 def cook(random_recipe=False, recipe_name=None):
     st.text("\n")
@@ -131,3 +169,4 @@ def cook(random_recipe=False, recipe_name=None):
         st.text("\n")
         st.subheader("팁/주의사항")
         st.text(st.session_state.selected_recipe["tips"])
+        

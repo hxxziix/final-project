@@ -34,6 +34,8 @@ if 'random_recipe' not in st.session_state:
     st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
 if 'hide_random_recipe_details' not in st.session_state:
     st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
+if 'add_button' not in st.session_state:
+    st.session_state.add_button = False
 # ===================================================================================================
 
 # 함수
@@ -59,12 +61,13 @@ def change_page(selected_search_type):
     if st.session_state.search_type != selected_search_type:
         reset_session_state() # 모든 세션 상태 변수 초기화
         st.session_state.search_type = selected_search_type
+        st.experimental_rerun()
 
 
 # 첫 화면 함수
 def home():
 
-    st.image('app_gui/main_page.png', width=650)
+    st.image('app_gui/main_icon.png', width=650)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -149,14 +152,14 @@ def main():
 # 페이지 기본 설정
 st.set_page_config(
     page_title='MultiCampus AvengersEnsemble',
-    page_icon='app_gui/1.png'
+    page_icon='app_gui/title_icon.png'
 )
 
 # background
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back.png?raw=true");
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back_ground.png?raw=true");
         background-size: cover;
         background-position: center;
         min-height: 100vh;

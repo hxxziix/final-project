@@ -1,7 +1,6 @@
 import streamlit as st
 
 
-
 def camera_labels_modify_page():
     if st.session_state.search_type == "카메라":
         col1, _, _ = st.columns([3, 5, 5])
@@ -15,6 +14,7 @@ def camera_labels_modify_page():
                     font-weight: bold;
                     width: 100%;
                     height: 50px;
+                    margin: 1px 0px 0px 0px;
                     border:5px outset #fdffb2;
                 }
                 .stButton>button:hover {
@@ -41,7 +41,7 @@ def camera_labels_modify_page():
         
         with col1:
             if st.session_state.edit_label[label]:
-                changed_label = st.text_input(" ", value=label, key=f"label_{label}", label_visibility="collapsed", placeholder="새 레이블 입력")
+                changed_label = st.text_input(f"'{label}'을(를) 무엇으로 바꾸시겠습니까?", value=label, key=f"label_{label}")
             else:
                 st.markdown(f"""
                     <style>
@@ -85,18 +85,18 @@ def camera_labels_modify_page():
     st.markdown("""
                 <style>
                     .add_ingredients {
-                        font-size: 25px;
+                        font-size: 30px;
                         color: #4f704b;
                         font-weight: bold;
                         text-shadow: 2px  2px 0 #fff;
                         font-family: 'Fira Code';
                         text-align: center;
-                        padding: 50px 10px 0px 10px;
+                        padding: 10px 10px 0px 10px;
                         border-radius: 8px;
                     }    
                 </style>    
                 <p class=add_ingredients>
-                    추가할 재료가 있으면<br> 아래 칸에 입력 후 "추가" 버튼을 눌러주시고<br>추가할 재료가 없으면<br>"다음" 버튼을 눌러주세요
+                    추가할 재료를 적어주세요
                 </p>""", unsafe_allow_html=True)
     
     # text_input box CSS
@@ -104,9 +104,8 @@ def camera_labels_modify_page():
         <style>
             .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-d7.st-d8.st-d9.st-da.st-db.st-ev.st-ew.st-dc {
                 border: 5px dotted #fef8ad;
-                height: 200px
                 border-radius: 10px;
-                padding: 10px 10px 10px 10px;
+                padding: 10px;
                 font-size: 30px;
                 color: #333;
                 background-color: #f9f9f9;
@@ -114,10 +113,9 @@ def camera_labels_modify_page():
             }
             .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-f7.st-f8.st-f9.st-fa.st-db.st-ev.st-ew.st-dc {
                 border: 5px dotted #f2a653;
-                height: 200px
                 border-radius: 10px;
-                padding: 10px 10px 10px 10px;
-                font-size: 30px;
+                padding: 10px;
+                font-size: 16px;
                 color: #333;
                 background-color: #f9f9f9;
                 width: 100%;
@@ -127,7 +125,7 @@ def camera_labels_modify_page():
 
     new_label_input = st.text_input(" ", key="new_label_input")
     col4, col5 = st.columns([5, 5])
-    if col4.button("추가"):
+    if col4.button("재료 추가"):
         if new_label_input:
             st.session_state.detected_labels.add(new_label_input)
             st.experimental_rerun()
@@ -139,76 +137,3 @@ def camera_labels_modify_page():
             st.experimental_rerun()
         else:
             st.write("재료가 없습니다!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def input_labels_modify_page():
-    if st.session_state.search_type == "직접 입력":
-        if st.button("뒤로 가기"):
-            st.session_state.labels_modify_page = False
-            st.session_state.camera_running = True
-            st.experimental_rerun()
-
-    # st.write("나의 식재료:")
-
-    for label in list(st.session_state.detected_labels):
-        if label not in st.session_state.edit_label:
-            st.session_state.edit_label[label] = False
-
-        col1, col2, col3 = st.columns([6, 1, 1])
-        
-        with col1:
-            if st.session_state.edit_label[label]:
-                changed_label = st.text_input(f"'{label}'을(를) 무엇으로 바꾸시겠습니까?", value=label, key=f"label_{label}")
-            else:
-                st.write(label)
-        
-        with col2:
-            if st.session_state.edit_label[label]:
-                if st.button("확인", key=f"confirm_{label}"):
-                    st.session_state.detected_labels.remove(label)
-                    st.session_state.detected_labels.add(changed_label)
-                    st.session_state.edit_label[label] = False
-                    st.experimental_rerun()
-            else:
-                if st.button("수정", key=f"modify_{label}"):
-                    st.session_state.edit_label[label] = True
-                    st.experimental_rerun()
-        
-        with col3:
-            if st.button("삭제", key=f"delete_{label}"):
-                st.session_state.detected_labels.remove(label)
-                st.experimental_rerun()
-
-    new_label_input = st.text_input("새 재료가 있다면 추가하세요.", key="new_label_input")
-    if st.button("재료 추가"):
-        if new_label_input:
-            st.session_state.detected_labels.add(new_label_input)
-            st.experimental_rerun()
-
-    if st.button("다음"):
-        if st.session_state.detected_labels:
-            st.session_state.labels_modify_page = False
-            st.session_state.search_recipe_page = True
-            st.experimental_rerun()
-        else:
-            st.write("재료가 없습니다!")
-
-
-

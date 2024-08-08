@@ -4,28 +4,53 @@ from scipy.spatial.distance import cdist
 from collections import Counter, defaultdict
 from torchvision.ops import nms
 import torch
+import threading
+
+# 모델 파일명 리스트
+model_files = [f'models/model{model_number}.pt' for model_number in range(1, 9)]
+
+# 모델 로드 및 names 저장
+models = []
+model_names = {}
+
+# 모델파일 이름, 모델, 클래스 저장
+for model_file in model_files:
+    model = YOLO(model_file)
+    models.append((model_file, model))  # 모델 파일 이름도 같이 저장함
+    model_names[model_file] = model.names
 
 # 모든 모델 예측 수행, 결과 담기
 def ensemble_predict(image):
     results = []
     detection_counts = []
-    for model in models:
-        print(f'\n{model[0]}', end="")
-        result = model[1].predict(image, conf=0.5)
-        results.append(result)
-        # 각 모델에서 감지한 바운딩 박스의 수
-        detection_counts.append(len(result[0].boxes))
+    threads = []
+    thread_results = [None] * len(models)  # 각 스레드의 결과를 저장할 리스트
+
+    def model_predict(model_index):
+        # print(f'\n{models[model_index][0]}', end="")
+        result = models[model_index][1].predict(image, conf=0.5)
+        thread_results[model_index] = result  # 결과 저장
+        detection_counts[model_index] = len(result[0].boxes)  # 각 모델에서 감지한 바운딩 박스 수
+
+    # 각 모델에 대해 스레드 생성 및 시작
+    for i in range(len(models)):
+        detection_counts.append(0)  # 초기화
+        thread = threading.Thread(target=model_predict, args=(i,)) # 기본적으로 스레드가 실행하는 함수는 튜플을 매개변수로 줘야한다.
+        threads.append(thread)                                     # 튜플안에 단일 요소는 컴마(,)를 붙여야한다.
+        thread.start()
+
+    # 모든 스레드가 종료될 때까지 대기
+    for thread in threads:
+        thread.join()
+
+    results = thread_results  # 스레드에서 수집된 결과로 업데이트
+
     print('\n각 모델별 감지한 객체 수:')
     print(detection_counts)
 
     if sum(detection_counts) == 0:
         print("모든 모델이 객체를 감지하지 못함.")
         return [], [], []
-
-    # 과반수 이상의 모델이 바운딩 박스가 없는 경우
-    # if sum(count == 0 for count in detection_counts) >= len(models) / 2: # count가 0인 모델의 수가 과반수 이상인지 검사
-    #     print("\n과반수 이상의 모델이 객체를 감지하지 못하여 화면에 표시하지 않음.")
-    #     return [], [], []
 
     combined_results = combine_results(*results)  # final_boxes, final_confidences, final_labels
     return combined_results
@@ -141,8 +166,6 @@ def group_boxes_by_overlap(boxes, iou_threshold=0.4):
     return groups
 
 # IoU (Intersection over Union) 계산 함수
-# 객체 탐지 및 이미지 분석에서 두 바운딩 박스 간의 겹침 정도를 측정하는 지표,
-# IoU는 두 박스의 교차 영역과 두 박스의 합집합 영역 간의 비율을 나타냄
 def iou(box1, box2):
     x1 = max(box1[0], box2[0])  # x1 vs X1, 더 큰 값이 교집합 영역 좌상단 x좌표
     y1 = max(box1[1], box2[1])  # y1 vs Y1, 더 큰 값이 교집합 영역 좌상단 y좌표
@@ -155,17 +178,3 @@ def iou(box1, box2):
     union = box1_area + box2_area - intersection  # 두 박스의 합집합 영역에서 교집합 영역을 뺀 값
 
     return intersection / union if union > 0 else 0  # 교집합 면적을 합집합 면적으로 나눈값
-
-
-# 모델 파일명 리스트
-model_files = [f'models/model{model_number}.pt' for model_number in range(1, 9)]
-
-# 모델 로드 및 names 저장
-models = []
-model_names = {}
-
-# 모델파일 이름, 모델, 클래스 저장
-for model_file in model_files:
-    model = YOLO(model_file)
-    models.append((model_file, model)) # 모델 파일 이름도 같이 저장함
-    model_names[model_file] = model.names
