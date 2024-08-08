@@ -4,6 +4,13 @@ from Cook import *
 
 # 검색 모드가 활성화된 경우
 def search_recipe_page():
+    if st.button("뒤로 가기"):
+        st.session_state.search_recipe_page = False
+        st.session_state.labels_modify_page = True
+        if st.session_state.selected_recipe: # 검색 내역 확인
+            st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
+        st.experimental_rerun()
+    
     st.write("나의 식재료:")
     st.write(", ".join(st.session_state.detected_labels))
 
@@ -58,6 +65,7 @@ def cook(random_recipe=False, recipe_name=None):
     if not random_recipe:
         if st.button("검색"):
             if recipe_name:
+                st.session_state.hide_random_recipe_details = False
                 clicked = True
                 status_placeholder = st.empty() # 빈 자리표시자 생성
                 status_placeholder.text("검색 중입니다...")
@@ -96,10 +104,10 @@ def cook(random_recipe=False, recipe_name=None):
         st.text(st.session_state.selected_recipe["ingredients"])
 
         # 요리 영상
+        st.text("\n")
+        st.text("\n")
+        st.subheader("요리 영상")
         if st.session_state.selected_recipe["video_url"]:
-            st.text("\n")
-            st.text("\n")
-            st.subheader("요리 영상")
             st.video(st.session_state.selected_recipe["video_url"])
         else:
             st.text("요리 영상이 없습니다.")

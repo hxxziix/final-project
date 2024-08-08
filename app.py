@@ -27,8 +27,6 @@ if 'cook' not in st.session_state:
     st.session_state.cook = False # "요리하기" 단계 진입 활성화 상태
 if 'selected_recipe' not in st.session_state:
     st.session_state.selected_recipe = None # 상세 레시피 정보 변수
-if 'reset' not in st.session_state:
-    st.session_state.reset = False # 처음으로 돌아가기
 if 'random_recipe' not in st.session_state:
     st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
 if 'hide_random_recipe_details' not in st.session_state:
@@ -49,91 +47,14 @@ def reset_session_state():
     st.session_state.search_recipe_page = False
     st.session_state.cook = False
     st.session_state.selected_recipe = None
-    st.session_state.reset = False
     st.session_state.random_recipe = random_recipe()
     st.session_state.hide_random_recipe_details = False
 
 def change_page(selected_search_type):
-    st.session_state.search_type = selected_search_type
-    
-# def home():
-#         # time.sleep(2)
-
-#         # 글자 중앙으로 내리기 위해 공백 생성
-#         empty = st.empty()
-#         empty.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
-
-#         # 이미지와 제목을 한 줄에 나란히 표시하기 위해 column 두개로 나눔
-#         col1, col2 = st.columns([3, 8])
-
-#         # col1 위치에 이미지
-#         with col1:
-#             st.image('app_gui/1.png', width=150)
-
-#         # col2 위치에 프젝 이름
-#         with col2:
-#             # 홈페이지 중앙 제목
-#             title = st.markdown("""
-#             <style>
-#                 .title {
-#                     font-size: 65px;
-#                     font-weight: bold;
-#                     color: #f481512;
-#                     text-shadow: 3px  0px 0 #fff;
-#                     }
-#             </style>
-#             <p class=title>
-#                 AI 요리 비서 ✨
-#             </p>""", unsafe_allow_html=True)
-
-#         # 위치 조정을 위한 공백
-#         empty1 = st.empty()
-#         empty1.markdown('<div style="height: 50px;"></div>', unsafe_allow_html=True)
-
-
-#         # 첫 화면 아래 설명글 첫번째
-#         subtitle = st.markdown("""
-#                     <style>
-#                         .subtitle {
-#                             font-size: 20px;
-#                             color: #f481512;
-#                             font-family: 'Fira Code';
-#                             font-weight: bold;
-#                             background-color: #CDBDEB;
-#                             color: #9A81B0;
-#                             border-radius: 8px;
-#                             border: 2px solid #fff;
-#                             margin: 50px 0px 50px 0px;
-#                             border-radius: 8px;
-#                             padding: 10px 0px 10px 0px;
-#                             text-align: center;
-#                             }
-#                     </style>
-#                     <p class=subtitle>
-#                         옵션 선택 창에서 사용하실 메뉴를 선택해주세요.
-#                     </p>
-#                             """, unsafe_allow_html=True)
-
-#         # 첫 화면 아래 설명글 두번째
-#         explanation = st.markdown("""
-#                         <style>
-#                             .explanation {
-#                                 font-size: 20px;
-#                                 color: #9A81B0;
-#                                 font-weight: bold;
-#                                 background-color: #CDBDEB;
-#                                 font-family: 'Fira Code';
-#                                 text-align: left;
-#                                 padding: 10px 40px 10px 40px;
-#                                 border-radius: 8px;
-#                                 margin: 0px 0px 0px 0px;
-#                                 }
-#                         </style>
-#                         <p class=explanation>
-#                             카메라: 사용자의 식재료를 카메라로 실시간 인식하여 레시피 추천 <br>
-#                             직접 입력: 사용자가 직접 입력하여 레시피 추천<br>
-#                             랜덤 추천: 랜덤으로 하나의 레시피 추천 
-#                         </p>""", unsafe_allow_html=True)
+    # 현재 선택된 페이지가 변경된 경우에만 상태 초기화
+    if st.session_state.search_type != selected_search_type:
+        reset_session_state() # 모든 세션 상태 변수 초기화
+        st.session_state.search_type = selected_search_type
 
 # 첫 화면 함수
 def home():
@@ -188,55 +109,8 @@ def home():
                     랜덤 추천: 랜덤으로 하나의 레시피 추천 
                 </p>""", unsafe_allow_html=True)
 
-# def main():
-#     side, main = st.columns([1, 9])
-
-#     with side:
-#         st.sidebar.title("메뉴")
-#         menu = ["옵션 선택", "카메라", "직접 입력", "랜덤 추천"]
-#         selected_search_type = st.sidebar.selectbox("", options=menu, index=menu.index(st.session_state.search_type))
-#         change_page(selected_search_type)
-        
-#         page_bg_img = '''
-#             <style>
-#             .stApp {
-#                 background-color: #ff0;
-#                 background-size: cover;
-#             }
-#             .stApp > header {
-#                 background-color: #ff0;
-#                 background-size: cover;
-#             }
-
-#             .st-emotion-cache-6qob1r {
-#                 background-color: #90EE90;  /* 연한 녹색 */
-#                 background-size: cover;
-#             }
-#             </style>
-#             '''
-#         st.markdown(page_bg_img, unsafe_allow_html=True)
-#     with main:
-#         if st.session_state.search_type == "옵션 선택":
-#             home()
-            
-#         if st.session_state.search_type == "카메라":
-#             st.sidebar.button("**처음으로 돌아가기**")
-#             camera_page()
-        
-#         if st.session_state.search_type == "직접 입력":
-#             st.sidebar.button("**처음으로 돌아가기**")
-#             text_input()
-        
-#         if st.session_state.search_type == "랜덤 추천":
-#             st.sidebar.button("**처음으로 돌아가기**")
-#             random_page()
-
 # side, main 영역별 기능
 def main():
-    if st.session_state.reset:
-        st.session_state.reset = False
-        st.experimental_rerun()
-
     side, main = st.columns([1, 9])
 
     with side:
@@ -248,7 +122,6 @@ def main():
             change_page(menu)
     with main:
         if st.session_state.search_type == "메인 화면":
-            reset_session_state() # 모든 세션 상태 변수 초기화
             home()
             
         if st.session_state.search_type == "카메라":

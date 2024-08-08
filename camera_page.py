@@ -4,12 +4,6 @@ from Draw import *
 from labels_modify_page import *
 from search_recipe_page import *
 
-# '촬영 시작' 버튼의 콜백함수
-def enable_camera():
-    st.session_state.camera_running = True
-    st.session_state.detected_labels.clear()
-    st.session_state.labels_modify_page = False
-
 # 카메라 시작 함수
 def show_camera():
     # 로컬 웹캠 열기
@@ -19,6 +13,10 @@ def show_camera():
         st.error("오류: 웹캠이 열려있지 않음.")
         return
     
+    if st.button("뒤로 가기"):
+        st.session_state.camera_running = False
+        st.experimental_rerun()
+
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
     label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
 
@@ -130,8 +128,9 @@ def camera_page():
 
         # '촬영 시작' 버튼 생성
         with col2:
-            camera_button_placeholder = st.empty()
-            camera_button_placeholder.button("촬영 시작", use_container_width=True, on_click=lambda: [enable_camera(), camera_button_placeholder.empty()])
+            if st.button("촬영 시작"):
+                st.session_state.camera_running = True
+                st.experimental_rerun()
 
         button = st.markdown("""
                 <style>

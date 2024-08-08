@@ -1,6 +1,12 @@
 import streamlit as st
 
 def labels_modify_page():
+    if st.session_state.search_type == "카메라":
+        if st.button("뒤로 가기"):
+            st.session_state.labels_modify_page = False
+            st.session_state.camera_running = True
+            st.experimental_rerun()
+
     st.write("나의 식재료:")
 
     for label in list(st.session_state.detected_labels):

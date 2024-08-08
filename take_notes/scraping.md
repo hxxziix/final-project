@@ -12,6 +12,9 @@ https://www.10000recipe.com/
 
   #contents_area_full > ul > ul > li:nth-child({i}) > div.common_sp_thumb > a > span
 
+- **요리영상이 포함된것이 없는 경우:**:
+  #contents_area_full > ul > ul > li:nth-child({i}) > div.common_sp_thumb > a > img
+
 - **요리된 사진**:
   
   #main_thumbs
