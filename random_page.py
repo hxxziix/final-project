@@ -2,29 +2,12 @@ import streamlit as st
 from search_recipe_page import *
 
 def random_page():
-    _, col1, _ = st.columns([4, 10, 1])
+    st.image("app_gui/random_title.png", width=700)
+    
+    _, col1, _ = st.columns([3, 10, 1])
 
     with col1:
-        st.image("app_gui/5.png")
-
-    header = st.markdown("""
-            <style>
-                .title {
-                        font-size: 40px;
-                        color: #f481512;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        background-color: #FAECFE;
-                        color: #B761B4;
-                        border-radius: 8px;
-                        
-                        border-radius: 8px;
-                        text-align: center;
-                        margin: 0px 0px 20px 0px;
-            </style>
-            <p class=title>
-                랜덤 추천 레시피
-            </p>""", unsafe_allow_html=True)
+        st.image("app_gui/random_icon.png", width=400)
 
     subheader = st.markdown(f"""
             <style>
@@ -33,8 +16,10 @@ def random_page():
                     background-color: #FAECFE;
                     color: #B761B4;
                     text-align: center;
+                    border: 10px outset #e3a9fa;
                     text-shadow: 3px  0px 0 #fff;
                     border-radius: 8px;
+                    margin: 0px 0px 50px 50px;
                     }}
             </style>
             <p class=subheader>

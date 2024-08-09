@@ -31,6 +31,8 @@ if 'random_recipe' not in st.session_state:
     st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
 if 'hide_random_recipe_details' not in st.session_state:
     st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
+if 'add_button' not in st.session_state:
+    st.session_state.add_button = False
 
 # =========================================================================================================
 # 함수
@@ -49,6 +51,7 @@ def reset_session_state():
     st.session_state.selected_recipe = None
     st.session_state.random_recipe = random_recipe()
     st.session_state.hide_random_recipe_details = False
+    # st.session_state.add_button = False
 
 def change_page(selected_search_type):
     # 현재 선택된 페이지가 변경된 경우에만 상태 초기화
@@ -58,9 +61,61 @@ def change_page(selected_search_type):
         st.experimental_rerun()
 
 # 첫 화면 함수
+# def home():
+
+#     st.image('app_gui/title.png', width=650)
+
+#     # 첫 화면 아래 설명글 첫번째
+#     subtitle = st.markdown("""
+#                 <style>
+#                     .subtitle {
+#                         font-size: 29px;
+#                         color: #f481512;
+#                         font-family: 'Fira Code';
+#                         font-weight: bold;
+#                         color: #4f704b;
+#                         border-radius: 8px;
+#                         background-color: #e3fedb;
+#                         border: 10px outset #c0fdb4;
+#                         text-shadow: 3px  3px 0 #fff;
+#                         margin: 50px 0px 50px 0px;
+#                         border-radius: 8px;
+#                         padding: 10px 0px 10px 0px;
+#                         text-align: center;
+#                         }
+#                 </style>
+#                 <p class=subtitle>
+#                     사용하실 메뉴를 선택해 주세요
+#                 </p>
+#                         """, unsafe_allow_html=True)
+
+
+#     # # 첫 화면 아래 설명글 두번째
+#     explanation = st.markdown("""
+#                 <style>
+#                     .explanation {
+#                         font-size: 20px;
+#                         color: #4f704b;
+#                         font-weight: bold;
+#                         background-color: #e3fedb;
+#                         border: 10px outset #c0fdb4;
+#                         text-shadow: 2px  2px 0 #fff;
+#                         font-family: 'Fira Code';
+#                         text-align: left;
+#                         padding: 10px 40px 10px 40px;
+#                         border-radius: 8px;
+#                         margin: 0px 0px 0px 0px;
+#                         }
+#                 </style>
+#                 <p class=explanation>
+#                     카메라: 사용자의 식재료를 카메라로 실시간 인식하여 레시피 추천 <br>
+#                     직접 입력: 사용자가 직접 입력하여 레시피 추천<br>
+#                     랜덤 추천: 랜덤으로 하나의 레시피 추천 
+#                 </p>""", unsafe_allow_html=True)
+
 def home():
 
-    st.image('app_gui/title.png', width=650)
+    st.image('app_gui/main_icon.png', width=650)
 
     # 첫 화면 아래 설명글 첫번째
     subtitle = st.markdown("""
@@ -143,15 +198,14 @@ def main():
 # 페이지 기본 설정
 st.set_page_config(
     page_title='MultiCampus AvengersEnsemble',
-    page_icon='app_gui/1.png'
+    page_icon='app_gui/title_icon.png'
 )
 
 # background
 background = '''
     <style>
     .stApp {
-        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/table-wood-fresh-organic.jpg?raw=true");
-        background-color: #dcd0c3;
+        background-image: url("https://github.com/Seunghwan-Ji/final-project/blob/jin/app_gui/back_ground.png?raw=true");
         background-size: cover;
         background-position: center;
         min-height: 100vh;

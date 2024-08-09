@@ -13,9 +13,29 @@ def show_camera():
         st.error("오류: 웹캠이 열려있지 않음.")
         return
     
-    if st.button("뒤로 가기"):
-        st.session_state.camera_running = False
-        st.experimental_rerun()
+    col1, _, _ = st.columns([3, 5, 5])
+    with col1:
+        st.markdown("""
+        <style>
+            .stButton>button {
+                background-color: #fdffeb;
+                color: #727421;
+                font-size: 25px;
+                font-weight: bold;
+                width: 100%;
+                height: 50px;
+                margin: 10px 0;
+                border: 7px outset #fdffb2;
+            }
+            .stButton>button:hover {
+                background-color: #ffffD3;
+                border: 7px outset #FFFF41;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+        if st.button("**뒤로 가기**"):
+            st.session_state.camera_running = False
+            st.experimental_rerun()
 
     placeholder = st.empty()  # 영상 출력을 위한 빈 공간 정의
     label_placeholder = st.empty()  # 탐지된 라벨을 표시할 빈 공간 정의
@@ -53,18 +73,47 @@ def show_camera():
         label_placeholder.markdown(f"""
             <style>
                 .text {{
-                    font-size: 35px;
-                    color: #f481512;
-                    text-shadow: 3px  0px 0 #fff;}}
+                        font-size: 29px;
+                        color: #f481512;
+                        font-family: 'Fira Code';
+                        font-weight: bold;
+                        color: #727421;
+                        border-radius: 8px;
+                        background-color: #fdffeb;
+                        border: 10px dotted #fdffb2;
+                        text-shadow: 3px  3px 0 #fff;
+                        margin: 10px 0px 50px 0px;
+                        border-radius: 8px;
+                        padding: 10px 0px 10px 0px;
+                        text-align: center;
+                        }}
             </style>
             <p class="text">
-                📸탐지된 식재료 : {", ".join(st.session_state.detected_labels)}
+                {", ".join(st.session_state.detected_labels)}
             </p>""", unsafe_allow_html=True)
 
         # "재료 인식 종료 및 수정" 버튼 생성
         if not st.session_state.finish_recognizing_button:
             st.button("재료 인식 종료 및 수정", use_container_width=True, on_click=end_modify)
             st.session_state.finish_recognizing_button = True
+            button = st.markdown("""
+                <style>
+                .stButton>button {
+                    background-color: #fdffeb;
+                    color: #727421;
+                    font-size: 25px;
+                    font-weight: bold;
+                    width: 100%;
+                    height: 50px;
+                    margin: 10px 0;
+                    border: 7px outset #fdffb2;
+                }
+                .stButton>button:hover {
+                    background-color: #ffffD3;
+                    border: 7px outset #FFFF41;
+                }
+                </style>
+            """, unsafe_allow_html=True)
 
     # 자원 해제
     cap.release()
@@ -84,68 +133,52 @@ def camera_page():
             # 요리 안내
             cook()
     else:
-        _, col1, _ = st.columns([3, 10, 1])
+        col1, _ = st.columns([10,10])
 
         with col1:
-            st.image("app_gui/camera.png")
-
-        header = st.markdown("""
-                <style>
-                    .title {
-                            font-size: 40px;
-                            color: #f481512;
-                            font-family: 'Fira Code';
-                            font-weight: bold;
-                            background-color: #FAECFE;
-                            color: #B761B4;
-                            border-radius: 8px;
-                            
-                            border-radius: 8px;
-                            text-align: center;
-                            margin: 0px 0px 20px 0px;
-                </style>
-                <p class=title>
-                    카메라 촬영
-                </p>""", unsafe_allow_html=True)
+            empty = """<div style="height: 70px;"></div>"""
+            st.markdown(empty, unsafe_allow_html=True)
+            st.image("app_gui/camera_icon.png", width=600)
 
         subheader = st.markdown("""
                 <style>
                     .subheader {
-                        font-size: 20px;
-                        background-color: #FAECFE;
-                        color: #B761B4;
+                        font-size: 25px;
+                        background-color: #fdffeb;
+                        color: #727421;
                         text-align: center;
                         text-shadow: 3px  0px 0 #fff;
                         border-radius: 8px;
+                        margin: 50px 0px 50px 0px;
+                        border: 10px outset #fdffb2;
                         }
                 </style>
                 <p class=subheader>
-                    AI 요리 비서가 레시피를 추천할 수 있도록 재료를 준비해주세요<br>
-                준비가 완료되었다면 아래에 <strong>촬영 시작</strong> 버튼을 눌러주세요
+                    재료를 준비해주시고 <br> 아래에 <strong>촬영 시작</strong> 버튼을 눌러주세요
                 </p>""", unsafe_allow_html=True)
 
-        _, col2, _ = st.columns([2, 5, 2])
+        _, col2, _ = st.columns([2, 3, 2])
 
         # '촬영 시작' 버튼 생성
         with col2:
+            buttonCSS = st.markdown("""
+                    <style>
+                    .stButton>button {
+                        background-color: #fdffeb;
+                        color: #727421;
+                        font-size: 25px;
+                        font-weight: bold;
+                        width: 100%;
+                        height: 50px;
+                        margin: 10px 0;
+                        border: 7px outset #fdffb2;
+                    }
+                    .stButton>button:hover {
+                        background-color: #ffffD3;
+                        border: 7px outset #FFFF41;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
             if st.button("촬영 시작"):
                 st.session_state.camera_running = True
                 st.experimental_rerun()
-
-        button = st.markdown("""
-                <style>
-                .stButton>button {
-                    background-color: #f6c6fb;
-                    color: #B761B4;
-                    font-size: 25px;
-                    font-weight: bold;
-                    width: 100%;
-                    height: 50px;
-                    margin: 10px 0;
-                    border: 2px solid #CDBDEB;
-                }
-                .stButton>button:hover {
-                    background-color: #f67dfb;
-                }
-                </style>
-            """, unsafe_allow_html=True)
