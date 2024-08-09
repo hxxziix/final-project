@@ -41,7 +41,7 @@ def camera_labels_modify_page():
         
         with col1:
             if st.session_state.edit_label[label]:
-                changed_label = st.text_input(" ", value=label, key=f"label_{label}", label_visibility="collapsed", placeholder="새 레이블 입력")
+                changed_label = st.text_input("", value=label, key=f"label_{label}", label_visibility="collapsed")
             else:
                 st.markdown(f"""
                     <style>
@@ -125,8 +125,11 @@ def camera_labels_modify_page():
         </style>""",
         unsafe_allow_html=True) 
 
+    # 재료 추가 입력창
     new_label_input = st.text_input(" ", key="new_label_input")
+    
     col4, col5 = st.columns([5, 5])
+    
     if col4.button("추가"):
         if new_label_input:
             st.session_state.detected_labels.add(new_label_input)

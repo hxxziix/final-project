@@ -1,33 +1,33 @@
 import pandas as pd
 import random
 
-recipe_df = pd.read_csv("C:/Users/hj/Desktop/project/labels_translation/kr_recipe.csv")
+recipe_df = pd.read_csv("C:/Users/hj/Desktop/FINAL/YHJ/final-project/labels_translation/preprocessed_kr_recipe.csv")
 
-recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시피제목', 'CKG_NM': '요리명',
-                          'RGTR_ID': '등록자ID', 'RGTR_NM': '등록자명', 'INQ_CNT': '조회수',
-                          'RCMM_CNT': '추천수', 'SRAP_CNT': '스크랩수', 'CKG_MTH_ACTO_NM': '요리타입',
-                          'CKG_STA_ACTO_NM': '음식분위기', 'CKG_MTRL_ACTO_NM': '재료타입', 'CKG_KND_ACTO_NM': '음식타입',
-                          'CKG_IPDC': '요리소개', 'CKG_MTRL_CN': '재료리스트', 'CKG_INBUN_NM': '몇인분',
-                          'CKG_DODF_NM': '요리난이도', 'CKG_TIME_NM': '요리시간', 'FIRST_REG_DT': '최초등록일시'}, inplace=True)
-
-
-# 데이터 수정 (object => int64)
+# recipe_df.rename(columns={'RCP_SNO': '레시피일련번호', 'RCP_TTL': '레시피제목', 'CKG_NM': '요리명',
+#                           'RGTR_ID': '등록자ID', 'RGTR_NM': '등록자명', 'INQ_CNT': '조회수',
+#                           'RCMM_CNT': '추천수', 'SRAP_CNT': '스크랩수', 'CKG_MTH_ACTO_NM': '요리타입',
+#                           'CKG_STA_ACTO_NM': '음식분위기', 'CKG_MTRL_ACTO_NM': '재료타입', 'CKG_KND_ACTO_NM': '음식타입',
+#                           'CKG_IPDC': '요리소개', 'CKG_MTRL_CN': '재료리스트', 'CKG_INBUN_NM': '몇인분',
+#                           'CKG_DODF_NM': '요리난이도', 'CKG_TIME_NM': '요리시간', 'FIRST_REG_DT': '최초등록일시'}, inplace=True)
 
 
-# 데이터 수정 할 열 이름
-modify_col_data = ['추천수', '스크랩수']
+# # 데이터 수정 (object => int64)
 
-# 각 열에 대해 처리 수행
-for col in modify_col_data:
+
+# # 데이터 수정 할 열 이름
+# modify_col_data = ['추천수', '스크랩수']
+
+# # 각 열에 대해 처리 수행
+# for col in modify_col_data:
     
-    # 숫자로 변환할 수 없는 값 NaN으로 변경
-    recipe_df[col] = pd.to_numeric(recipe_df[col], errors='coerce')
+#     # 숫자로 변환할 수 없는 값 NaN으로 변경
+#     recipe_df[col] = pd.to_numeric(recipe_df[col], errors='coerce')
     
-    # NaN => 0
-    recipe_df[col].fillna(0, inplace=True)
+#     # NaN => 0
+#     recipe_df[col].fillna(0, inplace=True)
     
-    # object => int64
-    recipe_df[col] = recipe_df[col].astype('int64')
+#     # object => int64
+#     recipe_df[col] = recipe_df[col].astype('int64')
 
 
 
