@@ -65,7 +65,7 @@ def camera_labels_modify_page():
                         {label}
                     </p>
                             """, unsafe_allow_html=True)
-        
+
         with col2:
             if st.session_state.edit_label[label]:
                 if st.button("확인", key=f"confirm_{label}"):
@@ -141,9 +141,25 @@ def camera_labels_modify_page():
             st.session_state.search_recipe_page = True
             st.experimental_rerun()
         else:
-            st.write("재료가 없습니다!")
-
-
+            st.markdown("""
+            <style>
+                .warning {
+                    font-size: 25px;
+                    color: #99999;
+                    font-weight: bold;
+                    text-shadow: 2px  2px 0 #fff;
+                    font-family: 'Fira Code';
+                    text-align: center;
+                    padding: 10px 10px 10px 10px;
+                    border-radius: 8px;
+                    border: 10px outset #990000;
+                }    
+            </style>
+            <p class=warning>
+                ⚠️ 재료가 없습니다 ⚠️
+            </p>
+            """, unsafe_allow_html=True)
+            
 
 
 
