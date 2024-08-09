@@ -47,7 +47,6 @@ def camera_labels_modify_page():
                     <style>
                         .ingredients {{
                             font-size: 20px;
-                            color: #f481512;
                             font-family: 'Fira Code';
                             font-weight: bold;
                             color: #727421;
@@ -152,7 +151,7 @@ def camera_labels_modify_page():
                     text-align: center;
                     padding: 10px 10px 10px 10px;
                     border-radius: 8px;
-                    border: 10px outset #990000;
+                    border: 10px outset red;
                 }    
             </style>
             <p class=warning>
