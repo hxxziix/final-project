@@ -6,6 +6,9 @@ from camera_page import *
 from input_page import *
 from random_page import *
 from streamlit_option_menu import option_menu
+from recipe_recommend import *
+from make_recommend_df import *
+from recommend_page import *
 
 # ===================================================================================================
 
@@ -112,7 +115,8 @@ def home():
                 <p class=explanation>
                     카메라: 사용자의 식재료를 카메라로 실시간 인식하여 레시피 추천 <br>
                     직접 입력: 사용자가 직접 입력하여 레시피 추천<br>
-                    랜덤 추천: 랜덤으로 하나의 레시피 추천 
+                    랜덤 추천: 랜덤으로 하나의 레시피 추천
+                    메뉴 추천: 내가 골랐던 레시피와 비슷한 레시피 추천
                 </p>""", unsafe_allow_html=True)
 
 
@@ -122,7 +126,8 @@ def main():
 
     with side:
         with st.sidebar:
-            menu = option_menu("메뉴", ["메인 화면", "카메라", "직접 입력", "랜덤 추천"], icons=['house', 'camera', 'pencil', 'shuffle'], # 아이콘 추가
+            menu = option_menu("메뉴", ["메인 화면", "카메라", "직접 입력", "랜덤 추천", "메뉴 추천"], 
+                               icons=['house', 'camera', 'pencil', 'shuffle', 'book'], # 아이콘 추가
         menu_icon="cast", # 기본 메뉴 아이콘
         default_index=0, # 기본 선택된 인덱스
         )
@@ -142,7 +147,9 @@ def main():
 
         if st.session_state.search_type == "랜덤 추천":
             random_page()
-
+            
+        if st.session_state.search_type == "메뉴 추천":
+            recommend_page()
 
 # ====================================================================================================
 # UI
