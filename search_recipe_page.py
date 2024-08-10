@@ -437,7 +437,7 @@ def random_cook(random_recipe=False, recipe_name=None):
                 st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
             st.experimental_rerun()
     elif random_recipe:
-        if st.button(f"{recipe_name} 레시피"):
+        if st.button(f"{recipe_name} 레시피 상세보기"):
             st.image("app_gui/random_recipe_icon.png", width=700)
             st.session_state.hide_random_recipe_details = False
             clicked = True
