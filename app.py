@@ -34,8 +34,6 @@ if 'random_recipe' not in st.session_state:
     st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
 if 'hide_random_recipe_details' not in st.session_state:
     st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
-if 'add_button' not in st.session_state:
-    st.session_state.add_button = False
 # ===================================================================================================
 
 # 함수

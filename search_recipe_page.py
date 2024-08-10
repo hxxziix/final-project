@@ -136,257 +136,258 @@ def search_recipe_page():
                 st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
             st.experimental_rerun()
 
-def cook(random_recipe=False, recipe_name=None):
-    if st.button("레시피 따라 해보기"):
-        st.image("app_gui/show_recipe.png")
 
-        if not random_recipe:
-            st.markdown("""
-                <style>
-                    .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-d7.st-d8.st-d9.st-da.st-db.st-ev.st-ew.st-dc {
-                        border: 5px dotted #fef8ad;
-                        height: 200px
-                        border-radius: 10px;
-                        padding: 10px 10px 10px 10px;
-                        font-size: 30px;
-                        color: #333;
-                        background-color: #f9f9f9;
-                        width: 100%;
-                    }
-                    .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-f7.st-f8.st-f9.st-fa.st-db.st-ev.st-ew.st-dc {
-                        border: 5px dotted #f2a653;
-                        height: 200px
-                        border-radius: 10px;
-                        padding: 10px 10px 10px 10px;
-                        font-size: 30px;
-                        color: #333;
-                        background-color: #f9f9f9;
-                        width: 100%;
-                    }
-                </style>""",
-                unsafe_allow_html=True)   
-            # 검색 기능
-            recipe_name = st.text_input("")
-            return_button, search_button = st.columns([5, 5])
-        clicked = False
-        if not random_recipe:
-            if search_button.button("검색"):
-                if recipe_name:
-                    st.session_state.hide_random_recipe_details = False
-                    clicked = True
-                    status_placeholder = st.empty() # 빈 자리표시자 생성
-                    status_placeholder.text("검색 중입니다...")
-            if return_button.button("뒤로 가기"):
-                st.session_state.search_recipe_page = False
-                st.session_state.labels_modify_page = True
-                if st.session_state.selected_recipe: # 검색 내역 확인
-                    st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
-                st.experimental_rerun()
-        elif random_recipe:
-            if st.button(f"'{recipe_name}' 레시피 상세안내 보기"):
+def cook(random_recipe=False, recipe_name=None):
+    st.image("app_gui/show_recipe.png")
+    if not random_recipe:
+        st.markdown("""
+            <style>
+                .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-d7.st-d8.st-d9.st-da.st-db.st-ev.st-ew.st-dc {
+                    border: 5px dotted #fef8ad;
+                    height: 200px
+                    border-radius: 10px;
+                    padding: 10px 10px 10px 10px;
+                    font-size: 30px;
+                    color: #333;
+                    background-color: #f9f9f9;
+                    width: 100%;
+                }
+                .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-f7.st-f8.st-f9.st-fa.st-db.st-ev.st-ew.st-dc {
+                    border: 5px dotted #f2a653;
+                    height: 200px
+                    border-radius: 10px;
+                    padding: 10px 10px 10px 10px;
+                    font-size: 30px;
+                    color: #333;
+                    background-color: #f9f9f9;
+                    width: 100%;
+                }
+            </style>""",
+            unsafe_allow_html=True)   
+        # 검색 기능
+        recipe_name = st.text_input("")
+        return_button, search_button = st.columns([5, 5])
+    clicked = False
+    if not random_recipe:
+        if search_button.button("검색"):
+            if recipe_name:
                 st.session_state.hide_random_recipe_details = False
                 clicked = True
                 status_placeholder = st.empty() # 빈 자리표시자 생성
-                status_placeholder.text("로드 중입니다...")
-
-        if clicked:
-            recipe_url = get_valid_recipe_url(recipe_name)
-            if recipe_url:
-                recipe_info = get_recipe_info(recipe_url)
-                st.session_state.selected_recipe = recipe_info
-            else:
-                st.session_state.selected_recipe = None
-                st.text(f"'{recipe_name}' 레시피의 시각적인 정보를 찾지 못했습니다.")
-            
-            # 검색 완료 후 텍스트 제거
-            status_placeholder.empty()
-
-        # 검색 결과 표시
-        if st.session_state.selected_recipe and not st.session_state.hide_random_recipe_details:
-            
-            # 요리 이름
-            st.markdown(f"""
-                <style>
-                    .recipe_name {{
-                        font-size: 20px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        border-radius: 8px;
-                        background-color: #fdffeb;
-                        border: 10px double #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 1px 0px 10px 0px;
-                        }}
-                </style>
-                <p class=recipe_name>
-                    {recipe_name}
-                </p>
-                                """, unsafe_allow_html=True)
-
-            # 요리된 사진
-            st.image(st.session_state.selected_recipe["photo_url"])
-            
-            # 재료
-            st.markdown(f"""
-                <style>
-                    .ingredient_1 {{
-                        font-size: 30px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        border-radius: 8px;
-                        background-color: #fdffeb;
-                        border: 10px double #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 200px 0px 10px 0px;
-                        }}
-                </style>
-                <p class=ingredient_1>
-                    재료
-                </p>
+                status_placeholder.text("검색 중입니다...")
                 
-            """, unsafe_allow_html=True)
-            # 재료 목록
-            ingredients2 = "<br>".join(list(st.session_state.selected_recipe["ingredients"].split("\n")))
+        if return_button.button("뒤로 가기"):
+            st.session_state.search_recipe_page = False
+            st.session_state.labels_modify_page = True
+            if st.session_state.selected_recipe: # 검색 내역 확인
+                st.session_state.hide_random_recipe_details = True # 검색 내역 숨기기
+            st.experimental_rerun()
+    elif random_recipe:
+        if st.button(f"'{recipe_name}' 레시피 상세안내 보기"):
+            st.session_state.hide_random_recipe_details = False
+            clicked = True
+            status_placeholder = st.empty() # 빈 자리표시자 생성
+            status_placeholder.text("로드 중입니다...")
+
+    if clicked:
+        recipe_url = get_valid_recipe_url(recipe_name)
+        if recipe_url:
+            recipe_info = get_recipe_info(recipe_url)
+            st.session_state.selected_recipe = recipe_info
+        else:
+            st.session_state.selected_recipe = None
+            st.text(f"'{recipe_name}' 레시피의 시각적인 정보를 찾지 못했습니다.")
+        
+        # 검색 완료 후 텍스트 제거
+        status_placeholder.empty()
+
+    # 검색 결과 표시
+    if st.session_state.selected_recipe and not st.session_state.hide_random_recipe_details:
+        
+        # 요리 이름
+        st.markdown(f"""
+            <style>
+                .recipe_name {{
+                    font-size: 20px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    border-radius: 8px;
+                    background-color: #fdffeb;
+                    border: 10px double #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 1px 0px 10px 0px;
+                    }}
+            </style>
+            <p class=recipe_name>
+                {recipe_name}
+            </p>
+                            """, unsafe_allow_html=True)
+
+        # 요리된 사진
+        st.image(st.session_state.selected_recipe["photo_url"])
+        
+        # 재료
+        st.markdown(f"""
+            <style>
+                .ingredient_1 {{
+                    font-size: 30px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    border-radius: 8px;
+                    background-color: #fdffeb;
+                    border: 10px double #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 200px 0px 10px 0px;
+                    }}
+            </style>
+            <p class=ingredient_1>
+                재료
+            </p>
             
-            st.markdown(f"""
-                <style>
-                    .ingredients2 {{
-                        font-size: 20px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        border-radius: 8px;
-                        background-color: #fdffeb;
-                        border: 5px dotted  #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 1px 0px 200px 0px;
-                        }}
-                </style>
-                <p class=ingredients2>
-                    {ingredients2}
-                </p>
-                        """, unsafe_allow_html=True)
-            
-            # 요리 영상
-            st.markdown(f"""
-                <style>
-                    .video {{
-                        font-size: 30px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        background-color: #fdffeb;
-                        border: 10px double #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        border-radius: 8px;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 20px 0px 10px 0px;
-                        }}
-                </style>
-                <p class=video>
-                    요리 영상
-                </p>
-            """, unsafe_allow_html=True)
-            if st.session_state.selected_recipe["video_url"]:
-                st.video(st.session_state.selected_recipe["video_url"])
-            else:
-                st.warning("요리 영상이 없습니다.")
-
-            # 조리 순서
-            st.markdown(f"""
-                <style>
-                    .cooking {{
-                        font-size: 30px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        border-radius: 8px;
-                        background-color: #fdffeb;
-                        border: 10px double #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 200px 0px 20px 0px;
-                        }}
-                </style>
-                <p class=cooking>
-                    조리 순서
-                </p>
-            """, unsafe_allow_html=True)
-
-            # HTML 문자열 생성
-            html_steps = ""
-            
-
-            for step in st.session_state.selected_recipe["steps"]:
-                if step["image_url"]:
-                    html_steps += f"<img src='{step['image_url']}' class=step-image /> <br>"
-                if step["text"]:
-                    text_str = "<br>".join(step['text'].split("\n"))
-                    html_steps += f"<p class=cooking1>{text_str}</p>"
-
-
-            # 팁/주의사항
-            tips = st.session_state.selected_recipe.get("tips", "")
-            st.markdown(f"""
-            <head>
-                <style>
-                    .cooking1 {{
-                        font-size: 20px;
-                        color: #8887f7;
-                        font-family: 'Fira Code', monospace;
-                        font-weight: bold;
-                        border-radius: 8px;
-                        background-color: #fae5fd;
-                        border: 5px dotted #fdffb2;
-                        text-shadow: 3px 3px 0 #fff;
-                        text-align: center;
-                        padding: 5px 5px 5px 5px;
-                        margin: 10px 0 200px 0;
+        """, unsafe_allow_html=True)
+        # 재료 목록
+        ingredients2 = "<br>".join(list(st.session_state.selected_recipe["ingredients"].split("\n")))
+        
+        st.markdown(f"""
+            <style>
+                .ingredients2 {{
+                    font-size: 20px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    border-radius: 8px;
+                    background-color: #fdffeb;
+                    border: 5px dotted  #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 1px 0px 200px 0px;
                     }}
-                    .step-image {{
-                        width: 100%;
-                        max-width: 600px;
-                        margin: 100px 0px 0px 0px;
+            </style>
+            <p class=ingredients2>
+                {ingredients2}
+            </p>
+                    """, unsafe_allow_html=True)
+        
+        # 요리 영상
+        st.markdown(f"""
+            <style>
+                .video {{
+                    font-size: 30px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    background-color: #fdffeb;
+                    border: 10px double #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    border-radius: 8px;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 20px 0px 10px 0px;
                     }}
-                    .tips-section {{
-                        font-size: 20px;
-                        color: #727421;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        margin-top: 30px;
+            </style>
+            <p class=video>
+                요리 영상
+            </p>
+        """, unsafe_allow_html=True)
+        if st.session_state.selected_recipe["video_url"]:
+            st.video(st.session_state.selected_recipe["video_url"])
+        else:
+            st.warning("요리 영상이 없습니다.")
+
+        # 조리 순서
+        st.markdown(f"""
+            <style>
+                .cooking {{
+                    font-size: 30px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    border-radius: 8px;
+                    background-color: #fdffeb;
+                    border: 10px double #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 200px 0px 20px 0px;
                     }}
-                    .tips {{
-                        font-size: 30px;
-                        font-family: 'Fira Code';
-                        font-weight: bold;
-                        color: #727421;
-                        border-radius: 8px;
-                        background-color: #fdffeb;
-                        border: 10px double #fdffb2;
-                        text-shadow: 3px  3px 0 #fff;
-                        text-align: center;
-                        padding: 4px 0px 4px 0px;
-                        margin: 200px 0px 20px 0px;
-                    }}
-                </style>
-            </head>
-            <body>
-                <div>
-                    {html_steps}
-                </div>
-                    <h3 class = tips>팁/주의사항</h3>
-                <p class='tips-section'>
-                {tips}
-                </p>
-            </body>
-            """, unsafe_allow_html=True)
+            </style>
+            <p class=cooking>
+                조리 순서
+            </p>
+        """, unsafe_allow_html=True)
+
+        # HTML 문자열 생성
+        html_steps = ""
+        
+
+        for step in st.session_state.selected_recipe["steps"]:
+            if step["image_url"]:
+                html_steps += f"<img src='{step['image_url']}' class=step-image /> <br>"
+            if step["text"]:
+                text_str = "<br>".join(step['text'].split("\n"))
+                html_steps += f"<p class=cooking1>{text_str}</p>"
+
+
+        # 팁/주의사항
+        tips = st.session_state.selected_recipe.get("tips", "")
+        st.markdown(f"""
+        <head>
+            <style>
+                .cooking1 {{
+                    font-size: 20px;
+                    color: #8887f7;
+                    font-family: 'Fira Code', monospace;
+                    font-weight: bold;
+                    border-radius: 8px;
+                    background-color: #fae5fd;
+                    border: 5px dotted #fdffb2;
+                    text-shadow: 3px 3px 0 #fff;
+                    text-align: center;
+                    padding: 5px 5px 5px 5px;
+                    margin: 10px 0 200px 0;
+                }}
+                .step-image {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 100px 0px 0px 0px;
+                }}
+                .tips-section {{
+                    font-size: 20px;
+                    color: #727421;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    margin-top: 30px;
+                }}
+                .tips {{
+                    font-size: 30px;
+                    font-family: 'Fira Code';
+                    font-weight: bold;
+                    color: #727421;
+                    border-radius: 8px;
+                    background-color: #fdffeb;
+                    border: 10px double #fdffb2;
+                    text-shadow: 3px  3px 0 #fff;
+                    text-align: center;
+                    padding: 4px 0px 4px 0px;
+                    margin: 200px 0px 20px 0px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div>
+                {html_steps}
+            </div>
+                <h3 class = tips>팁/주의사항</h3>
+            <p class='tips-section'>
+            {tips}
+            </p>
+        </body>
+        """, unsafe_allow_html=True)
+

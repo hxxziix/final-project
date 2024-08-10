@@ -2,12 +2,12 @@ import streamlit as st
 from search_recipe_page import *
 
 def random_page():
-    st.image("app_gui/11.png", width=700)
+    st.image("app_gui/random_title.png", width=700)
     
     _, col1, _ = st.columns([3, 10, 1])
 
     with col1:
-        st.image("app_gui/5.png", width=400)
+        st.image("app_gui/random_icon.png", width=400)
 
     subheader = st.markdown(f"""
             <style>
