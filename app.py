@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 from camera_page import *
 from input_page import *
 from random_page import *
+# from torch.utils.tensorboard import SummaryWriter # 텐서보드 실행 명령어: tensorboard --logdir=runs
 
 # =========================================================================================================
 # 세션 상태 변수
@@ -25,14 +26,18 @@ if 'search_recipe_page' not in st.session_state:
     st.session_state.search_recipe_page = False # 검색 페이지 활성화 상태
 if 'cook' not in st.session_state:
     st.session_state.cook = False # "요리하기" 단계 진입 활성화 상태
+if 'recipe_df_sort_by' not in st.session_state:
+    st.session_state.recipe_df_sort_by = None # 레시피 데이터 프레임 정렬기준
 if 'selected_recipe' not in st.session_state:
     st.session_state.selected_recipe = None # 상세 레시피 정보 변수
 if 'random_recipe' not in st.session_state:
     st.session_state.random_recipe = random_recipe() # 초기 랜덤 레시피 로드
 if 'hide_random_recipe_details' not in st.session_state:
-    st.session_state.hide_random_recipe_details = False # 랜덤 레시피 상세안내 목록 숨기기 상태
-if 'add_button' not in st.session_state:
-    st.session_state.add_button = False
+    st.session_state.hide_random_recipe_details = False # 레시피 상세안내 목록 숨기기 상태
+# if 'writer' not in st.session_state:
+#     st.session_state.writer = SummaryWriter('runs/streamlit_camera_experiment') # TensorBoard SummaryWriter
+# if 'frame_count' not in st.session_state:
+#     st.session_state.frame_count = 0 # 카메라 프레임 카운트 변수
 
 # =========================================================================================================
 # 함수
@@ -47,10 +52,14 @@ def reset_session_state():
     st.session_state.edit_label = {}
     st.session_state.all_ingredients_include = False
     st.session_state.search_recipe_page = False
+    st.session_state.recipe_df_sort_by = None
     st.session_state.cook = False
     st.session_state.selected_recipe = None
     st.session_state.random_recipe = random_recipe()
     st.session_state.hide_random_recipe_details = False
+    # st.session_state.writer.close()
+    # st.session_state.writer = SummaryWriter('runs/streamlit_camera_experiment')
+    # st.session_state.frame_count = 0
     # st.session_state.add_button = False
 
 def change_page(selected_search_type):

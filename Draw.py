@@ -36,11 +36,11 @@ def draw_with_pil(image, boxes, confidences, labels):
             label_name = label
             
             # 사각형 그리기
-            draw.rectangle([x1, y1, x2, y2], outline=(0, 255, 0), width=2)
+            draw.rectangle([x1, y1, x2, y2], outline=(255, 0, 127), width=2)
 
             # 텍스트 추가
             text = f'{label_name} {conf:.2f}'
-            draw.text((x1, y1 - 30), text, fill=(36, 255, 12), font=font)  # 텍스트 색상과 폰트 지정
+            draw.text((x1, y1 - 30), text, fill=(0, 128, 255), font=font)  # 텍스트 색상과 폰트 지정
 
             # 박스 좌표, 신뢰도, 라벨이름 출력
             print(f'박스 좌표: {box}, 신뢰도: {conf}, 라벨: {label_name}')
