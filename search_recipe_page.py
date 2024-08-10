@@ -1,6 +1,7 @@
 import streamlit as st
 from Recipe import *
 from Cook import *
+import re
 
 # 검색 모드가 활성화된 경우
 def search_recipe_page():
@@ -13,7 +14,6 @@ def search_recipe_page():
             font-size: 25px;
             font-weight: bold;
             width: 100%;
-            margin: 0px 0;
             border: 7px outset #fdffb2;
         }
         .stButton>button:hover {
@@ -29,7 +29,6 @@ def search_recipe_page():
     <style>
         .user_ingredients {{
             font-size: 30px;
-            color: #f481512;
             font-family: 'Fira Code';
             font-weight: bold;
             color: #727421;
@@ -138,9 +137,7 @@ def search_recipe_page():
             st.experimental_rerun()
 
 def cook(random_recipe=False, recipe_name=None):
-    # st.text("\n")
-    # st.text("\n")
-    # st.title("레시피를 시각적으로 보여드리겠습니다!")
+
     st.image("app_gui/show_recipe.png")
 
     if not random_recipe:
@@ -212,7 +209,6 @@ def cook(random_recipe=False, recipe_name=None):
             <style>
                 .recipe_name {{
                     font-size: 20px;
-                    color: #f481512;
                     font-family: 'Fira Code';
                     font-weight: bold;
                     color: #727421;
@@ -220,7 +216,6 @@ def cook(random_recipe=False, recipe_name=None):
                     background-color: #fdffeb;
                     border: 10px double #fdffb2;
                     text-shadow: 3px  3px 0 #fff;
-                    border-radius: 8px;
                     text-align: center;
                     padding: 4px 0px 4px 0px;
                     margin: 1px 0px 10px 0px;
@@ -239,7 +234,6 @@ def cook(random_recipe=False, recipe_name=None):
             <style>
                 .ingredient_1 {{
                     font-size: 30px;
-                    color: #f481512;
                     font-family: 'Fira Code';
                     font-weight: bold;
                     color: #727421;
@@ -247,7 +241,6 @@ def cook(random_recipe=False, recipe_name=None):
                     background-color: #fdffeb;
                     border: 10px double #fdffb2;
                     text-shadow: 3px  3px 0 #fff;
-                    border-radius: 8px;
                     text-align: center;
                     padding: 4px 0px 4px 0px;
                     margin: 200px 0px 10px 0px;
@@ -265,7 +258,6 @@ def cook(random_recipe=False, recipe_name=None):
             <style>
                 .ingredients2 {{
                     font-size: 20px;
-                    color: #f481512;
                     font-family: 'Fira Code';
                     font-weight: bold;
                     color: #727421;
@@ -273,7 +265,6 @@ def cook(random_recipe=False, recipe_name=None):
                     background-color: #fdffeb;
                     border: 5px dotted  #fdffb2;
                     text-shadow: 3px  3px 0 #fff;
-                    border-radius: 8px;
                     text-align: center;
                     padding: 4px 0px 4px 0px;
                     margin: 1px 0px 200px 0px;
@@ -289,11 +280,9 @@ def cook(random_recipe=False, recipe_name=None):
             <style>
                 .video {{
                     font-size: 30px;
-                    color: #f481512;
                     font-family: 'Fira Code';
                     font-weight: bold;
                     color: #727421;
-                    border-radius: 8px;
                     background-color: #fdffeb;
                     border: 10px double #fdffb2;
                     text-shadow: 3px  3px 0 #fff;
@@ -317,7 +306,6 @@ def cook(random_recipe=False, recipe_name=None):
             <style>
                 .cooking {{
                     font-size: 30px;
-                    color: #f481512;
                     font-family: 'Fira Code';
                     font-weight: bold;
                     color: #727421;
@@ -325,7 +313,6 @@ def cook(random_recipe=False, recipe_name=None):
                     background-color: #fdffeb;
                     border: 10px double #fdffb2;
                     text-shadow: 3px  3px 0 #fff;
-                    border-radius: 8px;
                     text-align: center;
                     padding: 4px 0px 4px 0px;
                     margin: 200px 0px 20px 0px;
@@ -339,18 +326,24 @@ def cook(random_recipe=False, recipe_name=None):
         # HTML 문자열 생성
         html_steps = ""
         
+        # print(st.session_state.selected_recipe["steps"])
+        # print(type(st.session_state.selected_recipe["steps"]))
         for step in st.session_state.selected_recipe["steps"]:
             if step["image_url"]:
-                html_steps += f"<img src='{step['image_url']}' class='step-image' />"
-            text_str = "<br>".join(step['text'].split("\n"))
-            html_steps += f"<div class='cooking1'>{text_str}</div>"
-            print(text_str)
-            print(type(text_str))
+                html_steps += f"<img src='{step['image_url']}' class=step-image /> <br>"
+            if step["text"]:
+                text_str = "<br>".join(step['text'].split("\n"))
+            # text = re.sub(r'https?://\S+', '', text_str)
+                html_steps += f"<p class=cooking1>{text_str}</p>"
+        # print(html_steps)
+        # print(html_steps)
+        # print("="*50)
             
 
         # 팁/주의사항
         tips = st.session_state.selected_recipe.get("tips", "")
         st.markdown(f"""
+        <head>
             <style>
                 .cooking1 {{
                     font-size: 20px;
@@ -391,11 +384,14 @@ def cook(random_recipe=False, recipe_name=None):
                     margin: 200px 0px 20px 0px;
                 }}
             </style>
-            <p>
+        </head>
+        <body>
+            <div>
                 {html_steps}
-            </p>
-            <h3 class = tips>팁/주의사항</h3>
+            </div>
+                <h3 class = tips>팁/주의사항</h3>
             <p class='tips-section'>
             {tips}
             </p>
+        </body>
         """, unsafe_allow_html=True)
