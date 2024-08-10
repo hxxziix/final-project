@@ -4,27 +4,6 @@ from Draw import *
 from labels_modify_page import *
 from search_recipe_page import *
 
-# 예측 결과를 TensorBoard에 로깅하는 함수
-def log_results_to_tensorboard(frame_image, boxes, confidences, labels):
-    # TensorBoard에 로깅
-    for _, (box, conf, label) in enumerate(zip(boxes, confidences, labels)):
-        x1, y1, x2, y2 = box
-        # 각 박스의 신뢰도 및 레이블 로깅
-        st.session_state.writer.add_scalar(f'Boxes/{label}/Confidence', conf, st.session_state.frame_count)
-        st.session_state.writer.add_scalar(f'Boxes/{label}/X1', x1, st.session_state.frame_count)
-        st.session_state.writer.add_scalar(f'Boxes/{label}/Y1', y1, st.session_state.frame_count)
-        st.session_state.writer.add_scalar(f'Boxes/{label}/X2', x2, st.session_state.frame_count)
-        st.session_state.writer.add_scalar(f'Boxes/{label}/Y2', y2, st.session_state.frame_count)
-    
-    frame_array = np.array(frame_image) # 배열로 변환해서 로깅해야됨
-
-    # 배열의 형태 확인 및 변환
-    if len(frame_array.shape) == 3:  # (높이, 너비, 채널)
-        frame_array = frame_array.transpose((2, 0, 1))  # (채널, 높이, 너비)로 변환(텐서보드가 요구하는 형식임)
-    
-    # 프레임 이미지를 TensorBoard에 로깅
-    st.session_state.writer.add_image(f'Images/Frame_{st.session_state.frame_count}', frame_array, st.session_state.frame_count)
-
 # 카메라 시작 함수
 def show_camera():
     # 로컬 웹캠 열기
@@ -54,6 +33,7 @@ def show_camera():
             }
         </style>
     """, unsafe_allow_html=True)
+        
         if st.button("**뒤로 가기**"):
             st.session_state.camera_running = False
             st.experimental_rerun()
@@ -82,7 +62,6 @@ def show_camera():
         # 프레임을 BGR에서 RGB로 변환
         frame = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
         frame_image = Image.fromarray(frame)
-        # frame_image = Image.fromarray(frame.astype(np.uint8))
 
         # 이미지 업데이트
         placeholder.image(frame_image, use_column_width=True)  # 빈 공간에 프레임 이미지 업데이트
@@ -113,9 +92,6 @@ def show_camera():
             <p class="text">
                 {", ".join(st.session_state.detected_labels)}
             </p>""", unsafe_allow_html=True)
-        
-        # TensorBoard에 로깅
-        # log_results_to_tensorboard(frame_image, boxes, confidences, labels) # PIL 형식 이미지를 전달해야해서 output_image 전달
 
         # "재료 인식 종료 및 수정" 버튼 생성
         if not st.session_state.finish_recognizing_button:
@@ -140,13 +116,9 @@ def show_camera():
                 </style>
             """, unsafe_allow_html=True)
 
-        # 프레임 카운터 증가
-        # st.session_state.frame_count += 1
-
     # 자원 해제
     cap.release()
     cv2.destroyAllWindows()
-    # st.session_state.writer.close() # Writer 닫기
 
 def camera_page():
     if st.session_state.camera_running:
