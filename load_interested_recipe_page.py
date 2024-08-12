@@ -3,6 +3,19 @@ from Cook import *
 from search_recipe_page import *
 
 def load_interested_recipe_page(recipe_name, call_from_history_menu=False):
+    st.markdown("""
+        <style>
+            .stButton > button {
+                font-size: 20px;
+                background-color: #fdffeb;
+                color: #727421;
+                text-align: center;
+                border: 8px outset #fdffb2;
+                border-radius: 8px;
+                margin: 5px 0px 0px 0px;
+            }
+        """, unsafe_allow_html=True)
+    
     if st.button("뒤로 가기"):
         st.session_state.load_interested_recipe_page = False
         

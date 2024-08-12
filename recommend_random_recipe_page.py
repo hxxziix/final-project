@@ -6,14 +6,15 @@ def recommend_random_recipe_page():
                 <style>
                     .stButton > button {
                         font-size: 20px;
-                        background-color: #FAECFE;
-                        color: #B761B4;
+                        background-color: #fdffeb;
+                        color: #727421;
                         text-align: center;
-                        border: 8px outset #e3a9fa;
+                        border: 8px outset #fdffb2;
                         border-radius: 8px;
                     }
                 </style>
                 """, unsafe_allow_html=True)
+    
     st.image("app_gui/random_title.png", width=700)
     
     _, col1, _ = st.columns([3, 10, 1])
@@ -25,15 +26,15 @@ def recommend_random_recipe_page():
             <style>
                 .subheader {{
                     font-size: 20px;
-                    background-color: #FAECFE;
-                    color: #B761B4;
+                    background-color: #fdffeb;
+                    color: #727421;
                     text-align: center;
-                    border: 10px outset #e3a9fa;
+                    border: 10px outset #fdffb2;
                     text-shadow: 3px  0px 0 #fff;
                     border-radius: 8px;
                     margin: 0px 0px 50px 50px;
                     }}
-            </>
+            </style>
             <p class=subheader>
                 요리 비서가 추천 드리는 레시피는 <br> <strong>{st.session_state.random_recipe['요리명']}</strong> 입니다 !
             </p>""", unsafe_allow_html=True)

@@ -2,11 +2,51 @@ import streamlit as st
 from load_interested_recipe_page import *
 
 def show_searched_recipe_history_list():
-    st.title("레시피 검색 기록")
+    st.markdown("""
+        <style>
+            .stButton > button {
+                font-size: 20px;
+                background-color: #fdffeb;
+                color: #727421;
+                text-align: center;
+                border: 5px outset #fdffb2;
+                border-radius: 8px;
+                margin: 5px 0px 0px 0px;
+            }
+            .custom-image {
+                border: 5px inset #fdffb2;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("""
+        <style>
+            h1 {
+                color: #727421;
+                text-shadow: 3px  3px 0 #fff;
+            }   
+        </style>
+        <h1> 레시피 검색 기록 </h1>
+    """, unsafe_allow_html=True)
         
     # 관심 요리 목록이 비어있는지 확인
     if not st.session_state.searched_recipe_history_list:
-        st.write("검색 기록이 없습니다.")
+        st.markdown(f"""
+            <style>
+                .subheader {{
+                    font-size: 20px;
+                    background-color: #fdffeb;
+                    color: #727421;
+                    text-align: center;
+                    border: 5px dotted #fdffb2;
+                    text-shadow: 3px  0px 0 #fff;
+                    border-radius: 8px;
+                    width: auto;
+                    }}
+            </style>
+            <p class=subheader>
+                검색 기록이 없습니다.
+            </p>""", unsafe_allow_html=True)
     else:
         num_columns = 3
         cols = st.columns(num_columns)

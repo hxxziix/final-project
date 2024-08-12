@@ -3,11 +3,47 @@ from load_interested_recipe_page import *
 from recommend_similar_recipe_page import *
 
 def show_interested_recipe_list():
+    st.markdown("""
+        <style>
+            .stButton > button {
+                font-size: 15px;
+                background-color: #fdffeb;
+                color: #727421;
+                text-align: center;
+                border: 8px outset #fdffb2;
+                border-radius: 8px;
+                margin: 5px 0px 0px 0px;
+            }
+            h1#afcbc26e {
+                color: #727421;
+                text-shadow: 3px  3px 0 #fff;
+            }
+            .custom-image {
+                border: 5px inset #fdffb2;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     st.title("관심 요리 목록")
         
     # 관심 요리 목록이 비어있는지 확인
     if not st.session_state.interested_recipe_list:
-        st.write("관심 요리 목록이 비어있습니다.")
+        st.markdown(f"""
+            <style>
+                .subheader {{
+                    font-size: 20px;
+                    background-color: #fdffeb;
+                    color: #727421;
+                    text-align: center;
+                    border: 5px dotted #fdffb2;
+                    text-shadow: 3px  0px 0 #fff;
+                    border-radius: 8px;
+                    width: auto;
+                    }}
+            </style>
+            <p class=subheader>
+                관심 요리 목록이 비어있습니다.
+            </p>""", unsafe_allow_html=True)
     else:
         num_columns = 3
         cols = st.columns(num_columns)
