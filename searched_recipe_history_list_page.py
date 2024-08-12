@@ -28,7 +28,23 @@ def show_searched_recipe_history_list():
         
     # 관심 요리 목록이 비어있는지 확인
     if not st.session_state.searched_recipe_history_list:
-        st.write("검색 기록이 없습니다.")
+        st.markdown(f"""
+            <style>
+                .subheader {{
+                    font-size: 20px;
+                    background-color: #fdffeb;
+                    color: #727421;
+                    text-align: center;
+                    border: 5px dotted #fdffb2;
+                    text-shadow: 3px  0px 0 #fff;
+                    border-radius: 8px;
+                    width: auto;
+                    }}
+            </style>
+            <p class=subheader>
+                검색 기록이 없습니다.
+            </p>""", unsafe_allow_html=True)
+        # st.write("검색 기록이 없습니다.")
     else:
         num_columns = 3
         cols = st.columns(num_columns)
