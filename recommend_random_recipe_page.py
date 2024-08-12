@@ -50,4 +50,5 @@ def recommend_random_recipe_page():
         st.experimental_rerun() # 페이지 새로고침
     
     recipe_name = st.session_state.random_recipe['요리명'] # 시리즈
+    st.session_state.recipe_df_selected_number = st.session_state.random_recipe['레시피일련번호'] # 시리즈
     search_recipe(recipe_name=recipe_name, random_recipe=True)
