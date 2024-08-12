@@ -172,7 +172,7 @@ def search_recipe(recipe_name=None, random_recipe=False):
                 st.session_state.search_recipe_page = False
                 st.session_state.modify_label_page = True
                 st.session_state.recipe_df_sort_by = None
-                st.session_state.recipe_df_selected_row = None
+                st.session_state.recipe_df_selected_name = None
                 
                 if st.session_state.searched_recipe_info: # 검색된 레시피 정보가 있는지 확인
                     st.session_state.searched_recipe_info = None
@@ -199,7 +199,7 @@ def search_recipe(recipe_name=None, random_recipe=False):
             st.session_state.search_recipe_page = False
             st.session_state.modify_label_page = True
             st.session_state.recipe_df_sort_by = None
-            st.session_state.recipe_df_selected_row = None
+            st.session_state.recipe_df_selected_name = None
             
             if st.session_state.searched_recipe_info: # 검색된 레시피 정보가 있는지 확인
                 st.session_state.searched_recipe_info = None
@@ -223,14 +223,23 @@ def search_recipe(recipe_name=None, random_recipe=False):
     if not st.session_state.hide_searched_recipe_info and st.session_state.searched_recipe_info:
         search_result(recipe_name)
 
-def search_result(recipe_name):
-    if not st.session_state.load_interested_recipe_page:
+def search_result(recipe_name, call_from_history_menu=False):
+    recipe_number = st.session_state.recipe_df_selected_number
+    photo_url = st.session_state.searched_recipe_info["photo_url"]
+    searched_recipe = (recipe_number, recipe_name, photo_url)
+    
+    # "요리 검색 기록" 메뉴에 저장
+    if searched_recipe not in st.session_state.searched_recipe_history_list:
+        st.session_state.searched_recipe_history_list.append(searched_recipe)
+    
+    if not st.session_state.load_interested_recipe_page or call_from_history_menu:
         # "관심 요리 목록에 추가하기" 버튼
         if st.button("관심 요리 목록에 추가하기", use_container_width=True):
-            recipe_number = st.session_state.recipe_df_selected_number
-            photo_url = st.session_state.searched_recipe_info["photo_url"]
-            st.session_state.interested_recipe_list.append((recipe_number, recipe_name, photo_url))
-            st.success(f"'{recipe_name}' 이(가) 관심 요리 목록에 추가되었습니다!")
+            if searched_recipe not in st.session_state.interested_recipe_list:
+                st.session_state.interested_recipe_list.append(searched_recipe)
+                st.success(f"'{recipe_name}' 이(가) 관심 요리 목록에 추가되었습니다!")
+            else:
+                st.success("이미 추가된 요리입니다.")
 
     # 요리 이름
     st.markdown(f"""

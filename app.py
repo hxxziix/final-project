@@ -4,6 +4,7 @@ from camera_recognize_ingredient_page import *
 from input_ingredient_page import *
 from recommend_random_recipe_page import *
 from interested_recipe_list_page import *
+from searched_recipe_history_list_page import *
 
 # =========================================================================================================
 # 세션 상태 변수
@@ -89,8 +90,8 @@ if 'selected_interested_recipe_number' not in st.session_state:
     st.session_state.selected_interested_recipe_number = None
 
 # 레시피 검색 기록 리스트
-if 'search_recipe_history_list' not in st.session_state:
-    st.session_state.search_recipe_history_list = [] # 초기화X
+if 'searched_recipe_history_list' not in st.session_state:
+    st.session_state.searched_recipe_history_list = [] # 초기화X
 
 # =========================================================================================================
 # 함수
@@ -151,8 +152,7 @@ def run():
             interested_recipe_list_page()
         
         if st.session_state.selected_menu == "요리 검색 기록":
-            # history_page()
-            pass
+            searched_recipe_history_list_page()
 
 # 선택된 메뉴 업데이트
 def change_menu(selected_menu):
