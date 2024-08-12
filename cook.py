@@ -33,12 +33,13 @@ def get_recipe_info(recipe_url):
     ingredients = []
     ingredient_number = 2
     while True:
+        # 이 동적태그를 2부터 대입해서 순회한다.
         ingredient_li = recipe_soup.select_one(f'#divConfirmedMaterialArea > ul > li:nth-child({ingredient_number})')
         if not ingredient_li:
-            break
+            break # 다음 태그가 존재하지 않으면 대입을 멈추고 빠져나간다.
         ingredients.append(ingredient_li.get_text(strip=True))
         ingredient_number += 1
-    ingredients_text = "\n".join(ingredients).replace("구매", "")
+    ingredients_text = "\n".join(ingredients).replace("구매", "") # 재료 텍스트 옆에 "구매" 텍스트를 지운다.
 
     # 요리 영상
     video_iframe = recipe_soup.select_one('#ifrmRecipeVideo')
@@ -48,26 +49,41 @@ def get_recipe_info(recipe_url):
 
     # 조리 순서
     steps = []
-    step_number = 1
+    step_number = 1 # 조리 단계, 동적 태그의 시작값
     while True:
-        step_descr = recipe_soup.select_one(f'#stepdescr{step_number}')
+        step_descr = recipe_soup.select_one(f'#stepdescr{step_number}') # 이 동적태그를 1부터 대입해서 순회한다.
 
         if not step_descr:
-            break
+            break # 다음 태그가 존재하지 않으면 대입을 멈추고 빠져나간다.
         
-        step_text = step_descr.get_text()
+        step_text = step_descr.get_text() # 조리설명 텍스트(메인설명 + 부연설명)
+        # print('==' * 50)
+        # print('step_text:')
+        # print(step_text)
 
-        p_tags = step_descr.select('p')
+        # 이 작업은 메인설명 텍스트와 부연설명 텍스트들이 가로로 이어져있는 형태를
+        # 줄바꿈 문자를 연결해 세로로 이어주는 역할을한다.
+        p_tags = step_descr.select('p') # step_descr 태그안에 p 태그가 존재한다, p 태그는 메인설명 밑에 부연설명하는 텍스트이다.
         if p_tags:
             sub_text = ""
             for p_tag in p_tags:
-                p_text = p_tag.get_text()
-                sub_text += ("\n" + p_text)
+                p_text = p_tag.get_text() # 부연설명 텍스트
+                sub_text += ("\n" + p_text) # 부연설명 텍스트끼리 줄바꿈 문자로 연결해 저장해둔다.
+                # print('\nsub_text:')
+                # print(sub_text)
 
-                parts = step_text.rsplit(p_text, 1)
-                step_text = "".join(parts)
-            step_text += ("\n" + sub_text)
+                parts = step_text.rsplit(p_text, 1) # 조리설명 텍스트에서 현재 부연설명 텍스트를 제거한다.(메인설명 텍스트만 남기기 위해서다.)
+                # print('\nparts:')
+                # print(parts)
+                step_text = "".join(parts) # 수정한 조리설명 텍스트를 업데이트한다.(스플릿은 리스트형태로 만드므로 조인으로 리스트를 벗긴다.)
+                # print('\nstep_text:')
+                # print(step_text)
+            
+            step_text += ("\n" + sub_text) # 메인설명 텍스트만 남은 문장에 저장해둔 부연설명들을 추가해준다.
+            # print('\nstep_text:')
+            # print(step_text)
         
+        # 조리 이미지
         step_img = recipe_soup.select_one(f'#stepimg{step_number} > img')
         step_image_url = step_img['src'] if step_img else None
 

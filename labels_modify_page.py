@@ -85,7 +85,7 @@ def camera_labels_modify_page():
                 <style>
                     .add_ingredients {
                         font-size: 25px;
-                        color: #4f704b;
+                        color: #727421;
                         font-weight: bold;
                         text-shadow: 2px  2px 0 #fff;
                         font-family: 'Fira Code';
@@ -108,7 +108,7 @@ def camera_labels_modify_page():
                 padding: 10px 10px 10px 10px;
                 font-size: 30px;
                 color: #333;
-                background-color: #f9f9f9;
+                background-color: #fdffeb;
                 width: 100%;
             }
             .st-ct.st-bn.st-cu.st-bq.st-cx.st-cy.st-cz.st-d0.st-d1.st-d2.st-d3.st-d4.st-eu.st-d6.st-ar.st-ak.st-an.st-al.st-am.st-cd.st-ck.st-cl.st-cm.st-cn.st-co.st-f7.st-f8.st-f9.st-fa.st-db.st-ev.st-ew.st-dc {
@@ -259,7 +259,7 @@ def input_labels_modify_page():
                     <style>
                         .add_ingredients {
                             font-size: 25px;
-                            color: #4f704b;
+                            color: #727421;
                             font-weight: bold;
                             text-shadow: 2px  2px 0 #fff;
                             font-family: 'Fira Code';
